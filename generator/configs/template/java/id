@@ -1,0 +1,38 @@
+{{if .keys}}package {{if .layer}}{{.name}}{{else}}{{.env.model}}{{end}};
+
+import java.io.Serializable;
+import java.util.Objects;
+
+public class {{.Name}}Id implements Serializable {|{{range $element := .fields}}{{if $element.key}}
+    @Id
+    private String {{$element.name}};{{end}}{{end}}
+    {{range $element := .fields}}{{if $element.key}}
+    public String get{{$element.Name}}() {
+         return {{$element.name}};
+    }
+
+    public void set{{$element.Name}}(String value) {
+           this.{{$element.name}} = value;
+    }{{end}}{{end}}
+
+    public {{.Name}}Id() {}
+
+    @Override
+    public boolean equals(Object o) {
+       if (this == o) return true;
+       if (o == null || getClass() != o.getClass()) return false;
+       {{.Name}}Id pk = ({{.Name}}Id) o;
+       {{range $element := .fields}}{{if $element.key}}
+       if (!(Objects.equals(get{{$element.Name}}(), pk.get{{$element.Name}}()))) {
+           return false;
+       }{{end}}{{end}}
+       return true;
+    }
+
+    @Override
+    public int hashCode() {
+       return Objects.hash({{range $element := .fields}}{{if $element.key}}
+           {{$element.name}},{{end}}{{end}}
+       );
+    }
+}{{end}}

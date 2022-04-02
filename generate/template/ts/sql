@@ -1,0 +1,30 @@
+import { Controller } from 'express-ext';
+import { Log, Manager, Search } from 'onecore';
+import { DB, Repository, SearchBuilder } from 'query-core';
+import { {{.Name}}, {{.Name}}Filter, {{.name}}{{.env.Model}}, {{.Name}}{{.env.Repository}}, {{.Name}}{{.env.Service}} } from './{{.path}}';
+export * from './{{.path}}';
+
+export class Sql{{.Name}}{{.env.Repository}} extends Repository<{{.Name}}, {{.tsId}}> implements {{.Name}}{{.env.Repository}} {
+  constructor(db: DB) {
+    super(db, '{{.table}}', {{.name}}{{.env.Model}});
+  }
+}
+export class {{.Name}}{{.env.Manager}} extends Manager<{{.Name}}, {{.tsId}}, {{.Name}}{{.env.Filter}}> implements {{.Name}}{{.env.Service}} {
+  constructor(search: Search<{{.Name}}, {{.Name}}{{.env.Filter}}>, {{.env.repository}}: {{.Name}}{{.env.Repository}}) {
+    super(search, {{.env.repository}});
+  }
+}
+export class {{.Name}}{{.env.Controller}} extends Controller<{{.Name}}, {{.tsId}}, {{.Name}}{{.env.Filter}}> {
+  constructor(log: Log, {{.env.service}}: {{.Name}}{{.env.Service}}) {
+    super(log, {{.env.service}});
+  }
+}
+
+export function {{.env.use}}{{.Name}}{{.env.useService}}(db: DB): {{.Name}}{{.env.Service}} {
+  const {{.env.builder}} = new SearchBuilder<{{.Name}}, {{.Name}}Filter>(db.query, '{{.table}}', {{.name}}{{.env.Model}}, db.driver);
+  const {{.env.repository}} = new Sql{{.Name}}{{.env.Repository}}(db);
+  return new {{.Name}}{{.env.Manager}}({{.env.builder}}.search, {{.env.repository}});
+}
+export function {{.env.use}}{{.Name}}Controller(log: Log, db: DB): {{.Name}}{{.env.Controller}} {
+  return new {{.Name}}{{.env.Controller}}(log, {{.env.use}}{{.Name}}{{.env.useService}}(db));
+}

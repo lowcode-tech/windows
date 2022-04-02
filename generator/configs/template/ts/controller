@@ -1,0 +1,9 @@
+import { Controller, Log } from 'express-ext';{{if .env.layer}}
+import { {{.Name}}, {{.Name}}{{.env.Filter}}, {{if .keys}}{{.tsId}}, {{end}}{{.Name}}{{.env.Service}} } from '../{{.env.metadata}}/{{.path}}';{{end}}{{if ne .env.layer true}}
+import { {{.Name}}, {{.Name}}{{.env.Filter}}, {{.Name}}{{.env.Service}} } from './{{.path}}';{{end}}
+
+export class {{.Name}}{{.env.Controller}} extends Controller<{{.Name}}, {{.tsId}}, {{.Name}}{{.env.Filter}}> {
+  constructor(log: Log, {{.env.service}}: {{.Name}}{{.env.Service}}) {
+    super(log, {{.env.service}});
+  }
+}

@@ -1,0 +1,37 @@
+import { Application } from 'express';{{if ne .env.check "true"}}
+import { ApplicationContext } from './context';
+
+export function route(app: Application, ctx: ApplicationContext): void {
+  app.get('/health', ctx.health.check);
+  app.patch('/log', ctx.log.config);
+  app.patch('/middleware', ctx.middleware.config);{{ range $element := .collections }}
+
+  app.post('/{{$element.paths}}/search', ctx.{{$element.name}}.search);
+  app.get('/{{$element.paths}}/search', ctx.{{$element.name}}.search);
+  app.get('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.load);
+  app.post('/{{$element.paths}}', ctx.{{$element.name}}.create);
+  app.put('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.update);
+  app.patch('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.patch);
+  app.delete('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.delete);
+{{end}}|}
+{{end}}{{if eq .env.check "true"}}
+import { check } from 'express-ext';
+import { ApplicationContext } from './context';{{if eq .env.layer true}}{{ range $element := .collections }}
+import { {{$element.name}}Model } from './metadata/{{$element.path}}';{{end}}{{end}}{{if ne .env.layer true}}{{ range $element := .collections }}
+import { {{$element.name}}Model } from './{{$element.path}}';{{end}}{{end}}
+
+export function route(app: Application, ctx: ApplicationContext): void {
+  app.get('/health', ctx.health.check);
+  app.patch('/log', ctx.log.config);
+  app.patch('/middleware', ctx.middleware.config);{{ range $element := .collections }}
+
+  const check{{$element.Name}} = check({{$element.name}}Model);
+  app.post('/{{$element.paths}}/search', ctx.{{$element.name}}.search);
+  app.get('/{{$element.paths}}/search', ctx.{{$element.name}}.search);
+  app.get('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.load);
+  app.post('/{{$element.paths}}', check{{$element.Name}}, ctx.{{$element.name}}.create);
+  app.put('/{{$element.paths}}/{{$element.ts_id_url}}', check{{$element.Name}}, ctx.{{$element.name}}.update);
+  app.patch('/{{$element.paths}}/{{$element.ts_id_url}}', check{{$element.Name}}, ctx.{{$element.name}}.patch);
+  app.delete('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.delete);
+{{end}}|}
+{{end}}

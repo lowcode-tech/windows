@@ -1,0 +1,8 @@
+package {{if .env.layer}}{{.env.filter}}{{else}}{{.raw}}{{end}}
+
+import . "github.com/core-go/search"
+
+type {{.Name}}{{.env.Filter}} struct {
+	*Filter{{ range $element := .fields }}
+    {{$element.Name}} {{$element.goFilterType}} `mapstructure:"{{$element.raw}}" json:"{{$element.name}},omitempty" gorm:"column:{{$element.column}}{{if $element.key}};primary_key{{end}}" bson:"{{$element.bson}}" dynamodbav:"{{$element.name}},omitempty" firestore:"{{$element.name}},omitempty" avro:"{{$element.name}}" validate:"required{{if ne $element.length 0}},max={{$element.length}}{{end}}"`{{end}}
+}

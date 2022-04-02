@@ -1,0 +1,34 @@
+server:
+  name: {{.env.project}}
+  port: {{.env.port}}
+
+sql:
+  driver: {{.env.driver}}
+  data_source_name: {{.env.data_source_name}}
+
+log:
+  level: info
+  map:
+    time: "@timestamp"
+    msg: message
+
+middleware:
+  log: true
+  skips: /health
+  request: request
+  response: response
+  size: size
+
+status:
+  not_found: 0
+  duplicate_key: 0
+  success: 1
+  version_error: 2
+  validation_error: 4
+  error: 4
+
+action:
+  create: create
+  update: update
+  patch: patch
+  delete: delete

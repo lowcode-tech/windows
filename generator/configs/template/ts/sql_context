@@ -1,0 +1,58 @@
+import { HealthController, LogController, Logger, Middleware, MiddlewareController, resources } from 'express-ext';{{if ne .env.layer true}}
+import { createChecker, DB } from 'query-core';{{if eq .env.check "true"}}
+import { check } from 'types-validation';{{end}}
+import { createValidator } from 'xvalidators';{{ range $element := .collections }}
+import { {{$element.Name}}{{.env.Controller}}, {{.env.use}}{{$element.Name}}{{.env.Controller}} } from './{{$element.path}}';{{end}}
+
+resources.createValidator = createValidator;{{if eq .env.check "true"}}
+resources.check = check;{{end}}
+
+export interface ApplicationContext {
+  health: HealthController;
+  log: LogController;
+  middleware: MiddlewareController;{{ range $element := .collections }}
+  {{$element.name}}: {{$element.Name}}{{.env.Controller}};{{end}}
+}
+export function {{.env.use}}Context(db: DB, logger: Logger, midLogger: Middleware): ApplicationContext {
+  const log = new LogController(logger);
+  const middleware = new MiddlewareController(midLogger);
+  const sqlChecker = createChecker(db);
+  const health = new HealthController([sqlChecker]);
+{{ range $element := .collections }}
+  const {{$element.name}} = {{.env.use}}{{$element.Name}}{{.env.Controller}}(logger.error, db);{{end}}
+
+  return { health, log, middleware{{ range $element := .collections }}, {{$element.name}}{{end}} };
+}
+{{end}}{{if .env.layer}}
+import { createChecker, DB, SearchBuilder } from 'query-core';{{if eq .env.check "true"}}
+import { check } from 'types-validation';{{end}}
+import { createValidator } from 'xvalidators';
+{{ range $element := .collections }}
+import { {{$element.Name}}{{.env.Controller}} } from './{{.env.controller_path}}/{{$element.path}}';
+import { {{$element.Name}}, {{$element.Name}}{{.env.Filter}}, {{$element.path}}{{.env.Model}} } from './metadata/{{$element.path}}';
+import { Sql{{$element.Name}}{{.env.Repository}} } from './{{.env.repository_path}}/{{$element.path}}';
+import { {{.env.use}}{{$element.Name}}{{.env.useService}} } from './{{.env.service_path}}/{{$element.path}}';{{end}}
+
+resources.createValidator = createValidator;{{if eq .env.check "true"}}
+resources.check = check;{{end}}
+
+export interface ApplicationContext {
+  health: HealthController;
+  log: LogController;
+  middleware: MiddlewareController;{{ range $element := .collections }}
+  {{$element.name}}: {{$element.Name}}{{.env.Controller}};{{end}}
+}
+export function useContext(db: DB, logger: Logger, midLogger: Middleware): ApplicationContext {
+  const log = new LogController(logger);
+  const middleware = new MiddlewareController(midLogger);
+  const sqlChecker = createChecker(db);
+  const health = new HealthController([sqlChecker]);
+{{ range $element := .collections }}
+  const {{$element.name}}{{.env.SearchBuilder}} = new SearchBuilder<{{$element.Name}}, {{$element.Name}}Filter>(db.query, '{{$element.table}}', {{$element.name}}Model, db.driver);
+  const {{$element.name}}{{.env.Repository}} = new Sql{{$element.Name}}{{.env.Repository}}(db);
+  const {{$element.name}}{{.env.Service}} = use{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.SearchBuilder}}.search, {{$element.name}}{{.env.Repository}});
+  const {{$element.name}} = new {{$element.Name}}{{.env.Controller}}(logger.error, {{$element.name}}{{.env.Service}});{{end}}
+
+  return { health, log, middleware{{ range $element := .collections }}, {{$element.name}}{{end}} };
+}
+{{end}}

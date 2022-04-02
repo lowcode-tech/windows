@@ -1,0 +1,32 @@
+package {{if .layer}}{{.name}}{{else}}{{.env.model}}{{end}};
+
+import javax.persistence.*;
+import java.lang.String;
+import java.util.List;
+
+@Entity{{if .composite}}
+@IdClass({{.Name}}Id.class){{end}}
+public class {{.Name}} {|{{range $element := .fields}}{{if $element.key}}
+     @Id
+     @Column(name = "{{$element.name}}")
+     private String {{$element.name}};
+{{else}}
+     @Column(name = "{{$element.name}}")
+     private String {{$element.name}};
+{{end}}{{end}}{{range $f := .fields}}
+     public String get{{$f.Name}}() {
+        return {{$f.name}};
+     }
+
+     public void set{{$f.Name}}(String value) {
+        this.{{$f.name}} = value;
+     }
+{{end}}{{range $child := .arrays}}
+     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+     @JoinColumns({|{{range $element := $child.link}}
+     @JoinColumn(name = "{{$element.Column}}", referencedColumnName = "{{$element.To}}"),{{end}}
+     })
+
+     private List<{{$child.Name}}> {{$child.names}};{{end}}
+     public {{.Name}}() {}
+}

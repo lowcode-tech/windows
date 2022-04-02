@@ -1,0 +1,79 @@
+{
+   "language": "ts",
+   "env": {
+     "Controller": "Controller",
+     "Filter": "Filter",
+     "Manager": "Manager",
+     "Model": "Model",
+     "Repository": "Repository",
+     "Service": "Service",
+     "builder": "builder",
+     "check": "false",
+     "controller": "controller",
+     "data_source_name": "root:abcd1234@/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
+     "driver": "mysql",
+     "leaf": "true",
+     "repository": "repository",
+     "service": "service",
+     "use": "use",
+     "useService": "Service",
+     "usecase_path": ""
+   },
+   "statics": [
+     {
+       "name": "settings",
+       "file": ".vscode/settings.json"
+     },
+     {
+       "name": "eslintrc",
+       "file": ".eslintrc.js"
+     },
+     {
+       "name": "tslint",
+       "file": "tslint.json"
+     },
+     {
+       "name": "mongo_package",
+       "file": "package.json"
+     },
+     {
+       "name": "tsconfig",
+       "file": "tsconfig.json"
+     },
+     {
+       "name": "env",
+       "file": ".env"
+     },
+     {
+       "name": "mongo_config",
+       "file": "src/config.ts"
+     },
+     {
+       "name": "mongo_app",
+       "file": "src/app.ts"
+     }
+   ],
+   "arrays": [
+     {
+       "name": "mongo_context",
+       "file": "src/context.ts"
+     },
+     {
+       "name": "route",
+       "file": "src/route.ts",
+       "replace": true
+     }
+   ],
+   "entities": [
+     {
+       "name": "metadata",
+       "file": "src/{{.env.usecase_path}}{{.path}}/{{.path}}.ts",
+       "replace": true
+     },
+     {
+       "name": "mongo",
+       "file": "src/{{.env.usecase_path}}{{.path}}/index.ts",
+       "replace": true
+     }
+   ]
+ }

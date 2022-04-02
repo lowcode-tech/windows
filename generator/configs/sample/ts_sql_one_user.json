@@ -1,0 +1,117 @@
+{
+  "language": "ts",
+  "env": {
+    "Controller": "Controller",
+    "Filter": "Filter",
+    "Manager": "Manager",
+    "Model": "Model",
+    "Repository": "Repository",
+    "Service": "Service",
+    "builder": "builder",
+    "controller": "controller",
+    "driver": "mysql",
+    "leaf": "true",
+    "repository": "repository",
+    "service": "service",
+    "use": "use",
+    "usecase_path": ""
+  },
+  "statics": [
+    {
+      "name": "settings",
+      "file": ".vscode/settings.json"
+    },
+    {
+      "name": "eslintrc",
+      "file": ".eslintrc.js"
+    },
+    {
+      "name": "tslint",
+      "file": "tslint.json"
+    },
+    {
+      "name": "sql_package",
+      "file": "package.json"
+    },
+    {
+      "name": "tsconfig",
+      "file": "tsconfig.json"
+    },
+    {
+      "name": "env",
+      "file": ".env"
+    },
+    {
+      "name": "sql_config",
+      "file": "src/config.ts"
+    },
+    {
+      "name": "sql_app",
+      "file": "src/app.ts"
+    }
+  ],
+  "collection": [
+    "user"
+  ],
+  "arrays": [
+    {
+      "name": "sql_context",
+      "file": "src/context.ts"
+    },
+    {
+      "name": "route",
+      "file": "src/route.ts",
+      "replace": true
+    }
+  ],
+  "entities": [
+    {
+      "name": "metadata",
+      "file": "src/{{.env.usecase_path}}{{.path}}/{{.path}}.ts",
+      "replace": true
+    },
+    {
+      "name": "sql",
+      "file": "src/{{.env.usecase_path}}{{.path}}/index.ts",
+      "replace": true
+    }
+  ],
+  "models": [
+    {
+      "name": "User",
+      "table": "users",
+      "fields": [
+        {
+          "name": "Id",
+          "column": "id",
+          "type": "string",
+          "length": 40,
+          "key": true
+        },
+        {
+          "name": "Username",
+          "column": "username",
+          "type": "string",
+          "length": 120
+        },
+        {
+          "name": "Email",
+          "column": "email",
+          "type": "string",
+          "length": 120
+        },
+        {
+          "name": "Phone",
+          "column": "phone",
+          "type": "string",
+          "length": 45
+        },
+        {
+          "name": "DateOfBirth",
+          "column": "date_of_birth",
+          "type": "datetime"
+        }
+      ]
+    }
+  ]
+}

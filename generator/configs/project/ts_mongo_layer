@@ -1,0 +1,85 @@
+{
+  "language": "ts",
+  "env": {
+    "layer": "true",
+    "check": "false",
+    "use": "use",
+    "useService": "Service",
+    "metadata": "metadata",
+    "repository": "repository",
+    "repository_path": "repository",
+    "service": "service",
+    "service_path": "service",
+    "controller": "controller",
+    "controller_path": "controller",
+    "Model": "Model",
+    "Filter": "Filter",
+    "Repository": "Repository",
+    "Service": "Service",
+    "Manager": "Manager",
+    "SearchBuilder": "SearchBuilder",
+    "Controller": "Controller",
+    "leaf": "true"
+  },
+  "statics": [{
+      "name": "settings",
+      "file": ".vscode/settings.json"
+    },
+    {
+      "name": "eslintrc",
+      "file": ".eslintrc.js"
+    },
+    {
+      "name": "tslint",
+      "file": "tslint.json"
+    },
+    {
+      "name": "mongo_package",
+      "file": "package.json"
+    },
+    {
+      "name": "tsconfig",
+      "file": "tsconfig.json"
+    },
+    {
+      "name": "env",
+      "file": ".env"
+    },
+    {
+      "name": "mongo_config",
+      "file": "src/config.ts"
+    },
+    {
+      "name": "mongo_app",
+      "file": "src/app.ts"
+    }
+  ],
+  "arrays": [{
+      "name": "mongo_context",
+      "file": "src/context.ts"
+    },
+    {
+      "name": "route",
+      "file": "src/route.ts",
+      "replace": true
+    }
+  ],
+  "entities": [{
+      "name": "metadata",
+      "file": "src/{{.env.metadata}}/{{.path}}.ts",
+      "replace": true
+    },
+    {
+      "name": "mongo_repository",
+      "file": "src/{{.env.repository_path}}/{{.path}}.ts"
+    },
+    {
+      "name": "controller",
+      "file": "src/{{.env.controller_path}}/{{.path}}.ts"
+    },
+    {
+      "name": "service",
+      "file": "src/{{.env.service_path}}/{{.path}}.ts"
+    }
+  ]
+}

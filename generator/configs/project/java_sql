@@ -1,0 +1,32 @@
+{
+  "language": "java",
+  "env": {
+    "Filter": "Filter",
+    "Handler": "Handler",
+    "Repository": "Repository",
+    "Service": "Service",
+    "data_source_name": "root:12345678x@X@(localhost:3306)/classicmodels?charset=utf8\u0026parseTime=True\u0026loc=Local",
+    "driver": "mysql",
+    "filter": "filter",
+    "go_module": "go-service",
+    "handler": "handler",
+    "leaf": "false",
+    "model": "model",
+    "port": "8080",
+    "root": "com.tma.",
+    "service": "service",
+    "usecase": "/usecase"
+  },
+  "entities": [{
+      "name": "model",
+      "file": "src/{{.env.root}}{{.env.model}}/{{.Name}}.java",
+      "model": true,
+      "replace": true
+    },
+    {
+      "name": "id",
+      "file": "src/{{.env.root}}{{.env.model}}/{{.Name}}Id.java",
+      "replace": true
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+   "language": "go",
+   "env": {
+     "Filter": "Filter",
+     "Handler": "Handler",
+     "Repository": "Repository",
+     "Service": "Service",
+     "filter": "filter",
+     "go_module": "go-service",
+     "handler": "handler",
+     "leaf": "false",
+     "model": "model",
+     "port": "8080",
+     "service": "service",
+     "usecase": "/usecase"
+   },
+   "statics": [
+     {
+       "name": "mongo_go_mod",
+       "file": "go.mod"
+     },
+     {
+       "name": "mongo_config",
+       "file": "configs/config.yaml"
+     },
+     {
+       "name": "main",
+       "file": "main.go"
+     },
+     {
+       "name": "mongo_root",
+       "file": "internal/app/root.go"
+     }
+   ],
+   "arrays": [
+     {
+       "name": "mongo_app",
+       "file": "internal/app/app.go"
+     },
+     {
+       "name": "route",
+       "file": "internal/app/route.go"
+     }
+   ],
+   "entities": [
+     {
+       "name": "model",
+       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}.go",
+       "model": true,
+       "replace": true
+     },
+     {
+       "name": "filter",
+       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}_filter.go"
+     },
+     {
+       "name": "service",
+       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}_service.go"
+     },
+     {
+       "name": "handler",
+       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}_handler.go"
+     }
+   ]
+ }

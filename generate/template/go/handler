@@ -1,0 +1,84 @@
+package {{if .env.layer}}{{.env.handler}}{{else}}{{.raw}}{{end}}
+
+import (
+	"context"
+	"github.com/core-go/search"
+	sv "github.com/core-go/service"
+	"net/http"
+	"reflect"{{if .env.layer}}
+
+	. "{{.env.go_module}}/internal/{{.env.filter}}"
+	. "{{.env.go_module}}/internal/{{.env.model}}"
+	. "{{.env.go_module}}/internal{{.env.usecase}}/{{.raw}}"{{end}}
+)
+
+type {{.Name}}{{.env.Handler}} interface {
+	Search(w http.ResponseWriter, r *http.Request)
+	Load(w http.ResponseWriter, r *http.Request)
+	Create(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
+	Patch(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
+}
+
+func New{{.Name}}{{.env.Handler}}(find func(context.Context, interface{}, interface{}, int64, ...int64) (int64, string, error), service {{.Name}}{{.env.Service}}, status sv.StatusConfig, logError func(context.Context, string), validate func(context.Context, interface{}) ([]sv.ErrorMessage, error), action *sv.ActionConfig) {{.Name}}{{.env.Handler}} {
+	filterType := reflect.TypeOf({{.Name}}{{.env.Filter}}{})
+	modelType := reflect.TypeOf({{.Name}}{})
+	params := sv.CreateParams(modelType, &status, logError, validate, action)
+	searchHandler := search.NewSearchHandler(find, modelType, filterType, logError, params.Log)
+	return &{{.name}}{{.env.Handler}}{service: service, SearchHandler: searchHandler, Params: params}
+}
+
+type {{.name}}{{.env.Handler}} struct {
+	service {{.Name}}{{.env.Service}}
+	*search.SearchHandler
+	*sv.Params
+}
+
+func (h *{{.name}}{{.env.Handler}}) Load(w http.ResponseWriter, r *http.Request) {
+	id := sv.{{.goGetId}}{{ if ne .goGetId "GetId"}}(w, r){{else}}(w, r, h.ModelType, h.Keys, h.Indexes){{end}}
+	if {{.goCheckId}} {
+		result, err := h.service.Load(r.Context(), {{.goIdPrefix}}id)
+		sv.RespondModel(w, r, result, err, h.Error, nil)
+	}
+}
+func (h *{{.name}}{{.env.Handler}}) Create(w http.ResponseWriter, r *http.Request) {
+	var {{.name}} {{.Name}}
+	er1 := sv.Decode(w, r, &{{.name}})
+	if er1 == nil {
+		errors, er2 := h.Validate(r.Context(), &{{.name}})
+		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Create) {
+			result, er3 := h.service.Create(r.Context(), &{{.name}})
+			sv.AfterCreated(w, r, &{{.name}}, result, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Create)
+		}
+	}
+}
+func (h *{{.name}}{{.env.Handler}}) Update(w http.ResponseWriter, r *http.Request) {
+	var {{.name}} {{.Name}}
+	er1 := sv.DecodeAndCheckId(w, r, &{{.name}}, h.Keys, h.Indexes)
+	if er1 == nil {
+		errors, er2 := h.Validate(r.Context(), &{{.name}})
+		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Update) {
+			result, er3 := h.service.Update(r.Context(), &{{.name}})
+			sv.HandleResult(w, r, &{{.name}}, result, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Update)
+		}
+	}
+}
+func (h *{{.name}}{{.env.Handler}}) Patch(w http.ResponseWriter, r *http.Request) {
+	var {{.name}} {{.Name}}
+	r, json, er1 := sv.BuildMapAndCheckId(w, r, &{{.name}}, h.Keys, h.Indexes)
+	if er1 == nil {
+		errors, er2 := h.Validate(r.Context(), &{{.name}})
+		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Patch) {
+			result, er3 := h.service.Patch(r.Context(), json)
+			sv.HandleResult(w, r, json, result, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Patch)
+		}
+	}
+}
+func (h *{{.name}}{{.env.Handler}}) Delete(w http.ResponseWriter, r *http.Request) {
+	id := sv.{{.goGetId}}{{ if ne .goGetId "GetId"}}(w, r){{else}}(w, r, h.ModelType, h.Keys, h.Indexes){{end}}
+    if {{.goCheckId}} {
+		result, err := h.service.Delete(r.Context(), {{.goIdPrefix}}id)
+		sv.HandleDelete(w, r, result, err, h.Error, h.Log, h.Resource, h.Action.Delete)
+	}
+}

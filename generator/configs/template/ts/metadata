@@ -1,0 +1,40 @@
+import { Attributes, {{.ts_date}}Filter, {{.ts_number}}Repository, Service } from 'onecore';
+
+export interface {{.Name}}{{.env.Filter}} extends Filter {|{{ range $element := .fields }}
+  {{$element.name}}?: {{$element.tsFilterType}};{{end}}
+}{{if .keys}}
+export interface {{.Name}}Id {|{{ range $element := .fields }}{{if $element.key}}
+  {{$element.name}}?: {{$element.type}};{{end}}{{end}}
+}{{end}}
+export interface {{.Name}} {|{{ range $element := .fields }}
+  {{$element.name}}?: {{$element.type}};{{end}}
+}{{ range $child := .arrays }}{{ if or ($child.leaf) (eq .env.leaf "false")}}{{if ne $child.Name $.Name}}
+export interface {{$child.Name}} {|{{ range $element := .fields }}
+  {{$element.name}}?: {{$element.type}};{{end}}
+}{{end}}{{end}}{{end}}
+export interface {{.Name}}{{.env.Repository}} extends Repository<{{.Name}}, {{.tsId}}> {
+}{{ range $child := .arrays }}{{ if or ($child.leaf) (eq .env.leaf "false")}}{{if ne $child.Name $.Name}}
+export interface {{$child.Name}}{{.env.Repository}} extends Repository<{{.Name}}, {{$child.tsId}}> {
+}{{end}}{{end}}{{end}}
+export interface {{.Name}}{{.env.Service}} extends Service<{{.Name}}, {{.tsId}}, {{.Name}}{{.env.Filter}}> {
+}
+
+export const {{.name}}{{.env.Model}}: Attributes = {|{{ range $element := .fields }}
+  {{$element.name}}: {|{{if $element.key}}
+    key: true,{{end}}{{if ne $element.NAME $element.COLUMN}}
+    column: '{{$element.column}}',{{end}}{{if ne $element.type "string"}}
+    type: '{{$element.jstype}}',{{else if ne $element.length 0}}
+    length: {{$element.length}},{{end}}
+  },{{end}}
+};{{ range $child := .arrays }}{{ if or ($child.leaf) (eq .env.leaf "false")}}{{if ne $child.Name $.Name}}
+export const {{$child.name}}{{.env.Model}}: Model = {
+  name: '{{$child.name}}',{{if ne $child.NAME $child.TABLE}}
+  table: '{{$child.table}}',{{end}}
+  attributes: {|{{ range $element := .fields }}
+    {{$element.name}}: {|{{if $element.key}}
+      key: true,{{end}}{{if ne $element.NAME $element.COLUMN}}
+      column: '{{$element.column}}',{{end}}{{if ne $element.type "string"}}
+      type: '{{$element.jstype}}',{{else if ne $element.length 0}}
+      length: {{$element.length}},{{end}}
+    },{{end}}
+}{{end}}{{end}}{{end}}

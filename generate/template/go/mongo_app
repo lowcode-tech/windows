@@ -1,0 +1,59 @@
+package app
+
+import (
+	"context"
+	"github.com/core-go/health"
+	"github.com/core-go/log"
+	mgo "github.com/core-go/mongo"
+	"github.com/core-go/search"
+	mq "github.com/core-go/search/mongo"
+	sv "github.com/core-go/service"
+	v "github.com/core-go/service/v10"
+	"reflect"
+{{if eq .env.layer true}}
+	"{{.env.go_module}}/internal/{{.env.handler}}"
+	"{{.env.go_module}}/internal/{{.env.model}}"{{ range $element := .collections }}
+	"{{.env.go_module}}/internal{{.env.usecase}}/{{$element.raw}}"{{end}}{{end}}
+{{if eq .env.layer false}}{{ range $element := .collections }}
+	"{{.env.go_module}}/internal{{.env.usecase}}/{{$element.raw}}"{{end}}{{end}}
+)
+
+type ApplicationContext struct {
+	Health *health.Handler{{if .env.layer}}{{ range $element := .collections }}
+	{{$element.Name}} {{.env.handler}}.{{$element.Name}}{{.env.Handler}}{{end}}{{end}}{{if ne .env.layer true}}{{ range $element := .collections }}
+    {{$element.Name}} {{$element.raw}}.{{$element.Name}}{{.env.Handler}}{{end}}{{end}}
+}
+
+func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
+	db, err := mgo.Setup(ctx, conf.Mongo)
+	if err != nil {
+		return nil, err
+	}
+	logError := log.ErrorMsg
+	status := sv.InitializeStatus(conf.Status)
+	action := sv.InitializeAction(conf.Action)
+	validator := v.NewValidator(){{if .env.layer}}
+{{ range $element := .collections }}
+    {{$element.name}}Type := reflect.TypeOf({{.env.model}}.{{$element.Name}}{})
+    {{$element.name}}Query := mq.UseQuery({{$element.name}}Type)
+    {{$element.name}}SearchBuilder := mgo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
+    {{$element.name}}{{.env.Repository}} := mgo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
+    {{$element.name}}{{.env.Service}} := {{.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Handler}} := {{.env.handler}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
+{{end}}{{end}}{{if ne .env.layer true}}
+{{ range $element := .collections }}
+    {{$element.name}}Type := reflect.TypeOf({{$element.raw}}.{{$element.Name}}{})
+    {{$element.name}}Query := mq.UseQuery({{$element.name}}Type)
+    {{$element.name}}SearchBuilder := mgo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
+    {{$element.name}}{{.env.Repository}} := mgo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
+    {{$element.name}}{{.env.Service}} := {{$element.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Handler}} := {{$element.raw}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
+{{end}}{{end}}
+	mongoChecker := mgo.NewHealthChecker(db)
+	healthHandler := health.NewHandler(mongoChecker)
+
+	return &ApplicationContext{
+		Health: healthHandler,{{ range $element := .collections }}
+        {{$element.Name}}: {{$element.name}}{{$element.env.Handler}},{{end}}
+	}, nil
+}

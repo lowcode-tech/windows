@@ -1,0 +1,90 @@
+{
+   "language": "ts",
+   "env": {
+     "Controller": "Controller",
+     "Filter": "Filter",
+     "Manager": "Manager",
+     "Model": "Model",
+     "Repository": "Repository",
+     "SearchBuilder": "SearchBuilder",
+     "Service": "Service",
+     "check": "true",
+     "controller": "controller",
+     "controller_path": "controller",
+     "data_source_name": "root:abcd1234@/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
+     "driver": "mysql",
+     "layer": "true",
+     "leaf": "true",
+     "metadata": "metadata",
+     "repository": "repository",
+     "repository_path": "repository",
+     "service": "service",
+     "service_path": "service",
+     "use": "use",
+     "useService": "Service"
+   },
+   "statics": [
+     {
+       "name": "settings",
+       "file": ".vscode/settings.json"
+     },
+     {
+       "name": "eslintrc",
+       "file": ".eslintrc.js"
+     },
+     {
+       "name": "tslint",
+       "file": "tslint.json"
+     },
+     {
+       "name": "sql_package",
+       "file": "package.json"
+     },
+     {
+       "name": "tsconfig",
+       "file": "tsconfig.json"
+     },
+     {
+       "name": "env",
+       "file": ".env"
+     },
+     {
+       "name": "sql_config",
+       "file": "src/config.ts"
+     },
+     {
+       "name": "sql_app",
+       "file": "src/app.ts"
+     }
+   ],
+   "arrays": [
+     {
+       "name": "sql_context",
+       "file": "src/context.ts"
+     },
+     {
+       "name": "route",
+       "file": "src/route.ts",
+       "replace": true
+     }
+   ],
+   "entities": [
+     {
+       "name": "metadata",
+       "file": "src/{{.env.metadata}}/{{.path}}.ts",
+       "replace": true
+     },
+     {
+       "name": "sql_repository",
+       "file": "src/{{.env.repository_path}}/{{.path}}.ts"
+     },
+     {
+       "name": "controller",
+       "file": "src/{{.env.controller_path}}/{{.path}}.ts"
+     },
+     {
+       "name": "service",
+       "file": "src/{{.env.service_path}}/{{.path}}.ts"
+     }
+   ]
+ }

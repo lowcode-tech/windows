@@ -1,0 +1,5 @@
+mysql: root:12345678x@X@(localhost:3306)/classicmodels?charset=utf8&parseTime=True&loc=Local
+postgres: postgresql://localhost:8089/postgres?user=postgres&password=12345678x@X&sslmode=disable
+sqlite3: ./sqlite.db
+mssql: sqlserver://sa:12345678x@X@localhost:8088?database=master
+oracle: oracle://GOLANG:golang@localhost:1521/orcl?standaloneConnection=0&timezone=UTC

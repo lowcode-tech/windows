@@ -1,0 +1,31 @@
+import { Controller } from 'express-ext';
+import { Db } from 'mongodb';
+import { buildQuery, Repository, SearchBuilder } from 'mongodb-extension';
+import { Log, Manager, Search } from 'onecore';
+import { {{.Name}}, {{.Name}}Filter, {{.name}}{{.env.Model}}, {{.Name}}{{.env.Repository}}, {{.Name}}{{.env.Service}} } from './{{.path}}';
+export * from './{{.path}}';
+
+export class Mongo{{.Name}}{{.env.Repository}} extends Repository<{{.Name}}, {{.tsId}}> implements {{.Name}}{{.env.Repository}} {
+  constructor(db: Db) {
+    super(db, '{{.name}}', {{.name}}{{.env.Model}});
+  }
+}
+export class {{.Name}}{{.env.Manager}} extends Manager<{{.Name}}, {{.tsId}}, {{.Name}}{{.env.Filter}}> implements {{.Name}}{{.env.Service}} {
+  constructor(search: Search<{{.Name}}, {{.Name}}{{.env.Filter}}>, {{.env.repository}}: {{.Name}}{{.env.Repository}}) {
+    super(search, {{.env.repository}});
+  }
+}
+export class {{.Name}}{{.env.Controller}} extends Controller<{{.Name}}, {{.tsId}}, {{.Name}}{{.env.Filter}}> {
+  constructor(log: Log, {{.env.service}}: {{.Name}}{{.env.Service}}) {
+    super(log, {{.env.service}});
+  }
+}
+
+export function {{.env.use}}{{.Name}}{{.env.useService}}(db: Db): {{.Name}}{{.env.Service}} {
+  const {{.env.builder}} = new SearchBuilder<{{.Name}}, {{.Name}}Filter>(db, '{{.name}}', buildQuery, {{.name}}{{.env.Model}});
+  const {{.env.repository}} = new Mongo{{.Name}}{{.env.Repository}}(db);
+  return new {{.Name}}{{.env.Manager}}({{.env.builder}}.search, {{.env.repository}});
+}
+export function {{.env.use}}{{.Name}}Controller(log: Log, db: Db): {{.Name}}{{.env.Controller}} {
+  return new {{.Name}}{{.env.Controller}}(log, {{.env.use}}{{.Name}}{{.env.useService}}(db));
+}

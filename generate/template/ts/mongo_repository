@@ -1,0 +1,10 @@
+import { Db } from 'mongodb';
+import { Repository } from 'mongodb-extension';{{if .env.layer}}
+import { {{.Name}}{{if .keys}}{{.tsId}}, {{end}}, {{.name}}{{.env.Model}}, {{.Name}}{{.env.Repository}} } from '../{{.env.metadata}}/{{.path}}';{{end}}{{if ne .env.layer true}}
+import { {{.Name}}{{if .keys}}{{.tsId}}, {{end}}, {{.name}}{{.env.Model}}, {{.Name}}{{.env.Repository}} } from './{{.path}}';{{end}}
+
+export class Mongo{{.Name}}{{.env.Repository}} extends Repository<{{.Name}}, {{.tsId}}> implements {{.Name}}{{.env.Repository}} {
+  constructor(db: Db) {
+    super(db, '{{.name}}', {{.name}}{{.env.Model}});
+  }
+}
