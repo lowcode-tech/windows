@@ -23,4 +23,4 @@ connectToDb(`${conf.mongo.uri}`, `${conf.mongo.db}`).then(db => {
   http.createServer(app).listen(conf.port, () => {
     console.log('Start mongo server at port ' + conf.port);
   });
-});
+}).catch(err => console.log('Cannot connect to mongo: ' + err));

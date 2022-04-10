@@ -14,7 +14,7 @@ export class {{.Name}}{{.env.Manager}} extends Manager<{{.Name}}, {{.tsId}}, {{.
   }
 }
 export function {{.env.use}}{{.Name}}{{.env.useService}}(db: Db): {{.Name}}{{.env.Service}} {
-  const {{.env.builder}} = new SearchBuilder<{{.Name}}, {{.Name}}{{.env.Filter}}>(db, '{{.name}}', buildQuery, {{.name}}{{.env.Model}});
+  const {{.env.builder}} = new SearchBuilder<{{.Name}}, {{.Name}}{{.env.Filter}}>(db, '{{.table}}', buildQuery, {{.name}}{{.env.Model}});
   const {{.env.repository}} = new Mongo{{.Name}}{{.env.Repository}}(db);
   return new {{.Name}}{{.env.Manager}}({{.env.builder}}.search, {{.env.repository}});
 }

@@ -5,6 +5,6 @@ import { {{.Name}}{{if .keys}}{{.tsId}}, {{end}}, {{.name}}{{.env.Model}}, {{.Na
 
 export class Mongo{{.Name}}{{.env.Repository}} extends Repository<{{.Name}}, {{.tsId}}> implements {{.Name}}{{.env.Repository}} {
   constructor(db: Db) {
-    super(db, '{{.name}}', {{.name}}{{.env.Model}});
+    super(db, '{{.table}}', {{.name}}{{.env.Model}});
   }
 }
