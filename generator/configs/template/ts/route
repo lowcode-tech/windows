@@ -12,8 +12,8 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.post('/{{$element.paths}}', ctx.{{$element.name}}.create);
   app.put('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.update);
   app.patch('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.patch);
-  app.delete('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.delete);
-{{end}}|}
+  app.delete('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.delete);{{end}}
+}
 {{end}}{{if eq .env.check "true"}}
 import { check } from 'express-ext';
 import { ApplicationContext } from './context';{{if eq .env.layer true}}{{ range $element := .collections }}
@@ -32,6 +32,6 @@ export function route(app: Application, ctx: ApplicationContext): void {
   app.post('/{{$element.paths}}', check{{$element.Name}}, ctx.{{$element.name}}.create);
   app.put('/{{$element.paths}}/{{$element.ts_id_url}}', check{{$element.Name}}, ctx.{{$element.name}}.update);
   app.patch('/{{$element.paths}}/{{$element.ts_id_url}}', check{{$element.Name}}, ctx.{{$element.name}}.patch);
-  app.delete('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.delete);
-{{end}}|}
+  app.delete('/{{$element.paths}}/{{$element.ts_id_url}}', ctx.{{$element.name}}.delete);{{end}}
+}
 {{end}}

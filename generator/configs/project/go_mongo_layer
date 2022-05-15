@@ -1,67 +1,71 @@
 {
-  "language": "go",
-  "env": {
-    "Filter": "Filter",
-    "Handler": "Handler",
-    "Repository": "Repository",
-    "Service": "Service",
-    "filter": "filter",
-    "go_module": "go-service",
-    "handler": "handler",
-    "layer": "true",
-    "leaf": "false",
-    "model": "model",
-    "port": "8080",
-    "service": "service",
-    "usecase": "/usecase"
-  },
-  "statics": [{
-      "name": "mongo_go_mod",
-      "file": "go.mod"
-    },
-    {
-      "name": "mongo_go_sum",
-      "file": "go.sum"
-    },
-    {
-      "name": "mongo_config",
-      "file": "configs/config.yaml"
-    },
-    {
-      "name": "main",
-      "file": "main.go"
-    },
-    {
-      "name": "mongo_root",
-      "file": "internal/app/root.go"
-    }
-  ],
-  "arrays": [{
-      "name": "mongo_app",
-      "file": "internal/app/app.go"
-    },
-    {
-      "name": "route",
-      "file": "internal/app/route.go"
-    }
-  ],
-  "entities": [{
-      "name": "model",
-      "file": "internal/{{.env.model}}/{{.raw | snake}}.go",
-      "model": true,
-      "replace": true
-    },
-    {
-      "name": "filter",
-      "file": "internal/{{.env.filter}}/{{.raw | snake}}_filter.go"
-    },
-    {
-      "name": "service",
-      "file": "internal/{{.env.usecase}}/{{.raw | snake}}/{{.raw}}_service.go"
-    },
-    {
-      "name": "handler",
-      "file": "internal/{{.env.handler}}/{{.raw | snake}}_handler.go"
-    }
-  ]
-}
+   "language": "go",
+   "env": {
+     "Filter": "Filter",
+     "Handler": "Handler",
+     "Repository": "Repository",
+     "Service": "Service",
+     "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
+     "filter": "filter",
+     "go_module": "go-service",
+     "handler": "handler",
+     "layer": "true",
+     "leaf": "false",
+     "model": "model",
+     "port": "8080",
+     "service": "service",
+     "usecase": ""
+   },
+   "statics": [
+     {
+       "name": "mongo_go_mod",
+       "file": "go.mod"
+     },
+     {
+       "name": "mongo_go_sum",
+       "file": "go.sum"
+     },
+     {
+       "name": "mongo_config",
+       "file": "configs/config.yaml"
+     },
+     {
+       "name": "main",
+       "file": "main.go"
+     },
+     {
+       "name": "mongo_root",
+       "file": "internal/app/config.go"
+     }
+   ],
+   "arrays": [
+     {
+       "name": "mongo_app",
+       "file": "internal/app/app.go"
+     },
+     {
+       "name": "route",
+       "file": "internal/app/route.go"
+     }
+   ],
+   "entities": [
+     {
+       "name": "model",
+       "file": "internal/{{.env.model}}/{{.raw | snake}}.go",
+       "model": true,
+       "replace": true
+     },
+     {
+       "name": "filter",
+       "file": "internal/{{.env.filter}}/{{.raw | snake}}_filter.go"
+     },
+     {
+       "name": "service",
+       "file": "internal/{{.env.usecase}}/{{.raw | snake}}/{{.raw}}_service.go"
+     },
+     {
+       "name": "handler",
+       "file": "internal/{{.env.handler}}/{{.raw | snake}}_handler.go"
+     }
+   ]
+ }

@@ -6,21 +6,21 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func Route(r *mux.Router, ctx context.Context, root Config) error {
-	app, err := NewApp(ctx, root)
+func Route(r *mux.Router, ctx context.Context, conf Config) error {
+	app, err := NewApp(ctx, conf)
 	if err != nil {
 		return err
 	}
 	r.HandleFunc("/health", app.Health.Check).Methods(GET)
 {{ range $element := .collections }}
-    {{$element.name}}Path := "/{{$element.raws}}"
-    r.HandleFunc({{$element.name}}Path, app.{{$element.Name}}.Search).Methods(GET)
-    r.HandleFunc({{$element.name}}Path+"/search", app.{{$element.Name}}.Search).Methods(GET, POST)
-    r.HandleFunc({{$element.name}}Path+"/{{$element.go_id_url}}", app.{{$element.Name}}.Load).Methods(GET)
-    r.HandleFunc({{$element.name}}Path, app.{{$element.Name}}.Create).Methods(POST)
-    r.HandleFunc({{$element.name}}Path+"/{{$element.go_id_url}}", app.{{$element.Name}}.Update).Methods(PUT)
-    r.HandleFunc({{$element.name}}Path+"/{{$element.go_id_url}}", app.{{$element.Name}}.Patch).Methods(PATCH)
-    r.HandleFunc({{$element.name}}Path+"/{{$element.go_id_url}}", app.{{$element.Name}}.Delete).Methods(DELETE)
+    {{$element.name}} := "/{{$element.raws}}"
+    r.HandleFunc({{$element.name}}, app.{{$element.Name}}.Search).Methods(GET)
+    r.HandleFunc({{$element.name}}+"/search", app.{{$element.Name}}.Search).Methods(GET, POST)
+    r.HandleFunc({{$element.name}}+"/{{$element.go_id_url}}", app.{{$element.Name}}.Load).Methods(GET)
+    r.HandleFunc({{$element.name}}, app.{{$element.Name}}.Create).Methods(POST)
+    r.HandleFunc({{$element.name}}+"/{{$element.go_id_url}}", app.{{$element.Name}}.Update).Methods(PUT)
+    r.HandleFunc({{$element.name}}+"/{{$element.go_id_url}}", app.{{$element.Name}}.Patch).Methods(PATCH)
+    r.HandleFunc({{$element.name}}+"/{{$element.go_id_url}}", app.{{$element.Name}}.Delete).Methods(DELETE)
 {{end}}
 	return nil
 }

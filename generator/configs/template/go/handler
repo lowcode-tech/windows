@@ -38,8 +38,8 @@ type {{.name}}{{.env.Handler}} struct {
 func (h *{{.name}}{{.env.Handler}}) Load(w http.ResponseWriter, r *http.Request) {
 	id := sv.{{.goGetId}}{{ if ne .goGetId "GetId"}}(w, r){{else}}(w, r, h.ModelType, h.Keys, h.Indexes){{end}}
 	if {{.goCheckId}} {
-		result, err := h.service.Load(r.Context(), {{.goIdPrefix}}id)
-		sv.RespondModel(w, r, result, err, h.Error, nil)
+		res, err := h.service.Load(r.Context(), {{.goIdPrefix}}id)
+		sv.RespondModel(w, r, res, err, h.Error, nil)
 	}
 }
 func (h *{{.name}}{{.env.Handler}}) Create(w http.ResponseWriter, r *http.Request) {
@@ -48,8 +48,8 @@ func (h *{{.name}}{{.env.Handler}}) Create(w http.ResponseWriter, r *http.Reques
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &{{.name}})
 		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Create) {
-			result, er3 := h.service.Create(r.Context(), &{{.name}})
-			sv.AfterCreated(w, r, &{{.name}}, result, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Create)
+			res, er3 := h.service.Create(r.Context(), &{{.name}})
+			sv.AfterCreated(w, r, &{{.name}}, res, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Create)
 		}
 	}
 }
@@ -59,8 +59,8 @@ func (h *{{.name}}{{.env.Handler}}) Update(w http.ResponseWriter, r *http.Reques
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &{{.name}})
 		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Update) {
-			result, er3 := h.service.Update(r.Context(), &{{.name}})
-			sv.HandleResult(w, r, &{{.name}}, result, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Update)
+			res, er3 := h.service.Update(r.Context(), &{{.name}})
+			sv.HandleResult(w, r, &{{.name}}, res, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Update)
 		}
 	}
 }
@@ -70,15 +70,15 @@ func (h *{{.name}}{{.env.Handler}}) Patch(w http.ResponseWriter, r *http.Request
 	if er1 == nil {
 		errors, er2 := h.Validate(r.Context(), &{{.name}})
 		if !sv.HasError(w, r, errors, er2, *h.Status.ValidationError, h.Error, h.Log, h.Resource, h.Action.Patch) {
-			result, er3 := h.service.Patch(r.Context(), json)
-			sv.HandleResult(w, r, json, result, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Patch)
+			res, er3 := h.service.Patch(r.Context(), json)
+			sv.HandleResult(w, r, json, res, er3, h.Status, h.Error, h.Log, h.Resource, h.Action.Patch)
 		}
 	}
 }
 func (h *{{.name}}{{.env.Handler}}) Delete(w http.ResponseWriter, r *http.Request) {
 	id := sv.{{.goGetId}}{{ if ne .goGetId "GetId"}}(w, r){{else}}(w, r, h.ModelType, h.Keys, h.Indexes){{end}}
     if {{.goCheckId}} {
-		result, err := h.service.Delete(r.Context(), {{.goIdPrefix}}id)
-		sv.HandleDelete(w, r, result, err, h.Error, h.Log, h.Resource, h.Action.Delete)
+		res, err := h.service.Delete(r.Context(), {{.goIdPrefix}}id)
+		sv.HandleDelete(w, r, res, err, h.Error, h.Log, h.Resource, h.Action.Delete)
 	}
 }

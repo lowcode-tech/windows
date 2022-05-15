@@ -36,7 +36,7 @@
      },
      {
        "name": "sql_root",
-       "file": "internal/app/root.go"
+       "file": "internal/app/config.go"
      }
    ],
    "arrays": [
