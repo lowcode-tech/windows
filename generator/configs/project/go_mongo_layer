@@ -27,7 +27,7 @@
      },
      {
        "name": "mongo_config",
-       "file": "configs/config.yaml"
+       "file": "configs/config.yml"
      },
      {
        "name": "main",

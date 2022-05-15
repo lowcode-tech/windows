@@ -21,7 +21,7 @@
      },
      {
        "name": "mongo_config",
-       "file": "configs/config.yaml"
+       "file": "configs/config.yml"
      },
      {
        "name": "main",
@@ -29,7 +29,7 @@
      },
      {
        "name": "mongo_root",
-       "file": "internal/app/root.go"
+       "file": "internal/app/config.go"
      }
    ],
    "arrays": [

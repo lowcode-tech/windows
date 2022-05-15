@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/core-go/health"
 	"github.com/core-go/log"
-	mgo "github.com/core-go/mongo"
+	"github.com/core-go/mongo"
 	"github.com/core-go/search"
 	mq "github.com/core-go/search/mongo"
 	sv "github.com/core-go/service"
@@ -25,7 +25,7 @@ type ApplicationContext struct {
 }
 
 func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
-	db, err := mgo.Setup(ctx, conf.Mongo)
+	db, err := mongo.Setup(ctx, conf.Mongo)
 	if err != nil {
 		return nil, err
 	}
@@ -36,20 +36,20 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
 {{ range $element := .collections }}
     {{$element.name}}Type := reflect.TypeOf({{.env.model}}.{{$element.Name}}{})
     {{$element.name}}Query := mq.UseQuery({{$element.name}}Type)
-    {{$element.name}}SearchBuilder := mgo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
-    {{$element.name}}{{.env.Repository}} := mgo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
+    {{$element.name}}SearchBuilder := mongo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
+    {{$element.name}}{{.env.Repository}} := mongo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
     {{$element.name}}{{.env.Service}} := {{.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{.env.handler}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}{{if ne .env.layer true}}
 {{ range $element := .collections }}
     {{$element.name}}Type := reflect.TypeOf({{$element.raw}}.{{$element.Name}}{})
     {{$element.name}}Query := mq.UseQuery({{$element.name}}Type)
-    {{$element.name}}SearchBuilder := mgo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
-    {{$element.name}}{{.env.Repository}} := mgo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
+    {{$element.name}}SearchBuilder := mongo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
+    {{$element.name}}{{.env.Repository}} := mongo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
     {{$element.name}}{{.env.Service}} := {{$element.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{$element.raw}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}
-	mongoChecker := mgo.NewHealthChecker(db)
+	mongoChecker := mongo.NewHealthChecker(db)
 	healthHandler := health.NewHandler(mongoChecker)
 
 	return &ApplicationContext{
