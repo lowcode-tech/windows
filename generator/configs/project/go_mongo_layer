@@ -6,6 +6,7 @@
      "Repository": "Repository",
      "Service": "Service",
      "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
+     "driver": "mysql",
      "filter": "filter",
      "go_module": "go-service",
      "handler": "handler",
