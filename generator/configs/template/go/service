@@ -1,4 +1,4 @@
-{{if .env.layer}}package {{.env.usecase}}{{else}}package {{.raw}}{{end}}
+{{if .env.layer}}package {{.env.service}}{{else}}package {{.raw}}{{end}}
 
 import (
 	"context"

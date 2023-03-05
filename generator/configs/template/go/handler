@@ -9,7 +9,7 @@ import (
 
 	. "{{.env.go_module}}/internal/{{.env.filter}}"
 	. "{{.env.go_module}}/internal/{{.env.model}}"
-	. "{{.env.go_module}}/internal/{{.env.usecase}}"{{end}}
+	. "{{.env.go_module}}/internal/{{.env.service}}"{{end}}
 )
 
 type {{.Name}}{{.env.Handler}} interface {

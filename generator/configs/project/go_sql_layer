@@ -14,8 +14,7 @@
      "leaf": "false",
      "model": "model",
      "port": "8080",
-     "service": "service",
-     "usecase": "service"
+     "service": "service"
    },
    "statics": [
      {
@@ -72,7 +71,7 @@
      },
      {
        "name": "service",
-       "file": "internal/{{.env.usecase}}/{{.raw}}_service.go"
+       "file": "internal/{{.env.service}}/{{.raw}}_service.go"
      },
      {
        "name": "handler",

@@ -13,8 +13,7 @@
      "leaf": "false",
      "model": "model",
      "port": "8080",
-     "service": "service",
-     "usecase": ""
+     "service": "service"
    },
    "statics": [
      {
@@ -57,21 +56,21 @@
      },
      {
        "name": "model",
-       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}.go",
+       "file": "internal/{{.raw}}/{{.raw}}.go",
        "model": true,
        "replace": true
      },
      {
        "name": "filter",
-       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}_filter.go"
+       "file": "internal/{{.raw}}/{{.raw}}_filter.go"
      },
      {
        "name": "service",
-       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}_service.go"
+       "file": "internal/{{.raw}}/{{.raw}}_service.go"
      },
      {
        "name": "handler",
-       "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}_handler.go"
+       "file": "internal/{{.raw}}/{{.raw}}_handler.go"
      }
    ]
  }
