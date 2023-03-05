@@ -13,7 +13,7 @@ import (
 	"{{.env.go_module}}/internal/{{.env.handler}}"
 	"{{.env.go_module}}/internal/{{.env.model}}"{{ range $element := .collections }}
 	"{{.env.go_module}}/internal/{{.env.usecase}}"{{end}}{{end}}{{if eq .env.layer false}}{{ range $element := .collections }}
-	"{{.env.go_module}}/internal/{{.env.usecase}}/{{$element.raw}}"{{end}}{{end}}
+	"{{.env.go_module}}/internal/{{$element.raw}}"{{end}}{{end}}
 )
 
 type ApplicationContext struct {
@@ -47,7 +47,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
 {{end}}{{end}}{{if ne .env.layer true}}
 {{ range $element := .collections }}
     {{$element.name}}Type := reflect.TypeOf({{$element.raw}}.{{$element.Name}}{})
-    {{$element.name}}QueryBuilder := query.UseQuery(db, "{{$element.table}}", {{$element.name}}Type)
+    {{$element.name}}Query := query.UseQuery(db, "{{$element.table}}", {{$element.name}}Type)
     {{$element.name}}SearchBuilder, err := q.NewSearchBuilder(db, {{$element.name}}Type, {{$element.name}}Query)
     if err != nil {
         return nil, err
