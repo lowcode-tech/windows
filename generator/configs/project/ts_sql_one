@@ -10,7 +10,7 @@
      "builder": "builder",
      "check": "true",
      "controller": "controller",
-     "data_source_name": "root:abcd1234@/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
+     "data_source_name": "root:abcd1234@(localhost:3306)/corebank?charset=utf8\u0026parseTime=True\u0026loc=Local",
      "driver": "mysql",
      "leaf": "true",
      "repository": "repository",
@@ -62,6 +62,10 @@
        "name": "route",
        "file": "src/route.ts",
        "replace": true
+     },
+     {
+       "name": "liquibase",
+       "file": "liquibase.yaml"
      }
    ],
    "entities": [

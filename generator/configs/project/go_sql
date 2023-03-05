@@ -5,8 +5,8 @@
      "Handler": "Handler",
      "Repository": "Repository",
      "Service": "Service",
-     "data_source_name": "./sqlite.db",
-     "driver": "sqlite3",
+     "data_source_name": "root:abcd1234@(localhost:3306)/corebank?charset=utf8\u0026parseTime=True\u0026loc=Local",
+     "driver": "mysql",
      "filter": "filter",
      "go_module": "go-service",
      "handler": "handler",
@@ -42,9 +42,19 @@
      {
        "name": "route",
        "file": "internal/app/route.go"
+     },
+     {
+       "name": "liquibase_all",
+       "file": "liquibase.yaml"
      }
    ],
    "entities": [
+     {
+       "name": "liquibase",
+       "file": "liquibase/{{.raw}}.yaml",
+       "model": true,
+       "replace": true
+     },
      {
        "name": "model",
        "file": "internal{{.env.usecase}}/{{.raw}}/{{.raw}}.go",

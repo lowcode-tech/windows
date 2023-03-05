@@ -47,9 +47,19 @@
      {
        "name": "route",
        "file": "internal/app/route.go"
+     },
+     {
+       "name": "liquibase_all",
+       "file": "liquibase.yaml"
      }
    ],
    "entities": [
+     {
+       "name": "liquibase",
+       "file": "liquibase/{{.raw}}.yaml",
+       "model": true,
+       "replace": true
+     },
      {
        "name": "model",
        "file": "internal/{{.env.model}}/{{.raw | snake}}.go",

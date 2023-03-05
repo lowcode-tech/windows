@@ -1,0 +1,18 @@
+databaseChangeLog:
+- changeSet:
+    id: CREATE_TABLE_{{ .TABLE }}
+    author: test.user (generated)
+    labels: sit-init
+    changes:
+    - createTable:
+        columns:{{ range $field := .fields }}
+        - column:{{if eq $field.key true}}
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: {{ .TABLE }}_PK{{end}}{{if eq $field.key false}}{{if eq $field.required true}}
+            constraints:
+              nullable: false{{end}}{{end}}
+            name: {{ $field.COLUMN }}
+            type: {{ $field.fullDbType }}{{end}}
+        tableName: {{.TABLE}}
