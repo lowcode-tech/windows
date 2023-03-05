@@ -13,7 +13,7 @@ func Route(r *mux.Router, ctx context.Context, conf Config) error {
 	}
 	r.HandleFunc("/health", app.Health.Check).Methods(GET)
 {{ range $element := .collections }}
-    {{$element.name}} := "/{{$element.raws}}"
+    {{$element.name}} := "/{{$element.paths}}"
     r.HandleFunc({{$element.name}}, app.{{$element.Name}}.Search).Methods(GET)
     r.HandleFunc({{$element.name}}+"/search", app.{{$element.Name}}.Search).Methods(GET, POST)
     r.HandleFunc({{$element.name}}+"/{{$element.go_id_url}}", app.{{$element.Name}}.Load).Methods(GET)

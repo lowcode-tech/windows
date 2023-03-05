@@ -14,8 +14,7 @@
      "leaf": "false",
      "model": "model",
      "port": "8080",
-     "service": "service",
-     "usecase": ""
+     "service": "service"
    },
    "statics": [
      {
@@ -47,6 +46,10 @@
      {
        "name": "route",
        "file": "internal/app/route.go"
+     },
+     {
+       "name": "swagger",
+       "file": "documents/swagger.yml"
      }
    ],
    "entities": [
@@ -62,7 +65,7 @@
      },
      {
        "name": "service",
-       "file": "internal/{{.env.usecase}}/{{.raw | snake}}/{{.raw}}_service.go"
+       "file": "internal/{{.env.service}}/{{.raw | snake}}_service.go"
      },
      {
        "name": "handler",

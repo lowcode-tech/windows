@@ -21,23 +21,257 @@ tags:
       description: Find out more about user
       url: http://swagger.io
 paths:
-{{ range $element := .collections }}  /{{$element.raws}}
-    id: CREATE_TABLE_{{ $element.TABLE }}
-    author: test.user (generated)
-    labels: sit-init
-    changes:
-    - createTable:
-        columns:{{ range $field := $element.fields }}
-        - column:{{if eq $field.key true}}
-            constraints:
-              nullable: false
-              primaryKey: true
-              primaryKeyName: {{if eq $field.keyName ""}}{{$element.TABLE}}_PK{{end}}{{if ne $field.keyName ""}}{{ $field.keyName }}{{end}}{{end}}{{if eq $field.key false}}{{if eq $field.required true}}
-            constraints:
-              nullable: false{{end}}{{end}}
-            name: {{ $field.COLUMN }}
-            type: {{ $field.fullDbType }}{{end}}
-        tableName: {{$element.TABLE}}
+{{ range $element := .collections }}  /{{$element.paths}}:
+    post:
+      tags:
+        - {{$element.name}}
+      summary: Create {{$element.Name}}
+      description: Create a new {{$element.Name}}.
+      operationId: create{{$element.Name}}
+      requestBody:
+        description: Created {{$element.Name}} object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{$element.Name}}'
+      responses:
+        '201':
+          description: 'return integer. 1: success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResult'
+        '400':
+          description: Invalid {{$element.Name}} supplied
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '409':
+          description: Duplicate key error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DuplicateKeyError'
+        '500':
+          description: Internal Server Error
+  /{{$element.paths}}/{{$element.go_id_url}}:
+    get:
+      tags:
+        - {{$element.name}}
+      summary: Get {{$element.Name}} by {{$element.Name}} ID
+      operationId: get{{$element.Name}}ById
+      parameters:
+        - name: {{$element.name}}Id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/{{$element.Name}}'
+        '400':
+          description: Invalid {{$element.Name}}Id supplied
+        '404':
+          description: {{$element.Name}} not found
+        '500':
+          description: Internal Server Error
+    put:
+      tags:
+        - {{$element.name}}
+      summary: Update {{$element.Name}}
+      description: Update a {{$element.Name}}.
+      operationId: update{{$element.Name}}
+      parameters:
+        - name: {{$element.name}}Id
+          in: path
+          description: {{$element.Name}} that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent {{$element.Name}}
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{$element.Name}}'
+      responses:
+        '200':
+          description: 'return integer. 1: success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/{{$element.Name}}Result'
+        '400':
+          description: Invalid {{$element.Name}} supplied
+        '404':
+          description: {{$element.Name}} not found. Return 0
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '409':
+          description: 'Version error: The version of updated user is different from database version'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionError'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '500':
+          description: Internal Server Error
+    patch:
+      tags:
+        - {{$element.name}}
+      summary: Update user
+      description: Perform a partial update of one {{$element.Name}}.
+      operationId: patchUser
+      parameters:
+        - name: {{$element.name}}Id
+          in: path
+          description: {{$element.Name}} that need to be update partially
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: a partial {{$element.Name}}
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{$element.Name}}'
+      responses:
+        '200':
+          description: 'return integer. 1: success'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/{{$element.Name}}Result'
+        '400':
+          description: Invalid {{$element.Name}} supplied
+        '404':
+          description: {{$element.Name}} not found. Return 0
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '409':
+          description: 'Version error: The version of updated {{$element.Name}} is different from database version'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionError'
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - {{$element.name}}
+      summary: Delete {{$element.Name}}
+      description: Delete one {{$element.Name}} by ID.
+      operationId: delete{{$element.Name}}
+      parameters:
+        - name: {{$element.name}}Id
+          in: path
+          description: The {{$element.name}}Id that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'return integer. 1: success'
+          content:
+            application/json:
+              schema:
+                type: integer
+        '400':
+          description: Invalid {{$element.name}}Id supplied
+        '404':
+          description: {{$element.Name}} not found. Return 0
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Internal Server Error
+  /{{$element.paths}}/search:
+    get:
+      tags:
+        - {{$element.name}}
+      summary: Search {{$element.Names}}
+      description: 'Get a user by ID'
+      operationId: serachUsers
+      parameters:
+        - name: page
+          in: query
+          description: 'The page index'
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          description: 'The max of numbers of users'
+          schema:
+            type: integer
+            example: 120
+        - name: fields
+          in: query
+          description: 'The return fields. For example, fields=username,email => return 2 fields: username and email'
+          schema:
+            type: string{{ range $field := $element.fields }}
+        - name: {{ $field.name }}
+          in: query
+          description: 'The {{ $field.name }} that needs to be fetched'
+          schema:
+            type: {{ $field.jstype }}{{ end }}
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSearchResponse'
+        '400':
+          description: Invalid parameters supplied
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - {{$element.name}}
+      summary: search users by POST
+      description: search users by POST
+      operationId: searchUserByPost
+      requestBody:
+        description: Search users by POST
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/{{$element.Name}}Filter'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/{{$element.Name}}SearchResponse'
+        '400':
+          description: Invalid {{$element.Name}}Filter supplied
+        '500':
+          description: Internal Server Error
 {{end}}components:
   schemas:
     TimeRange:
@@ -96,5 +330,39 @@ paths:
           example: 2
 {{ range $element := .collections }}    {{ $element.Name }}:
       type: object
+      properties:{{ range $field := $element.fields }}
+        {{ $field.name }}:
+          type: {{ $field.jstype }}{{end}}
+    {{ $element.Name }}Result:
+      type: object
       properties:
+        status:
+          type: integer
+          description: '1: success'
+          example: 1
+        value:
+          $ref: '#/components/schemas/{{ $element.Name }}'
+    {{ $element.Name }}Filter:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: 'Page index'
+          example: 1
+        limit:
+          type: integer
+          description: 'Maximum of numbers of {{ $element.names }}'
+          example: 20{{ range $field := $element.fields }}
+        {{ $field.name }}:
+          type: {{ $field.jstype }}{{end}}
+    {{ $element.Name }}SearchResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 120
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/{{ $element.Name }}'
 {{end}}

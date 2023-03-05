@@ -10,9 +10,9 @@ import (
 
 type Config struct {
 	Server     core.ServerConf    `mapstructure:"server"`
-	Sql        sql.Config       `mapstructure:"sql"`
-	Log        log.Config       `mapstructure:"log"`
-	MiddleWare mid.LogConfig    `mapstructure:"middleware"`
+	Sql        sql.Config         `mapstructure:"sql"`
+	Log        log.Config         `mapstructure:"log"`
+	MiddleWare mid.LogConfig      `mapstructure:"middleware"`
 	Status     *core.StatusConfig `mapstructure:"status"`
 	Action     *core.ActionConfig `mapstructure:"action"`
 }

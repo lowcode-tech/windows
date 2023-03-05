@@ -49,7 +49,7 @@
      },
      {
        "name": "liquibase_all",
-       "file": "liquibase.yml"
+       "file": "documents/liquibase.yml"
      },
      {
        "name": "swagger",
@@ -75,7 +75,7 @@
      },
      {
        "name": "service",
-       "file": "internal/{{.env.service}}/{{.raw}}_service.go"
+       "file": "internal/{{.env.service}}/{{.raw | snake}}_service.go"
      },
      {
        "name": "handler",
