@@ -1,6 +1,6 @@
 prefix: ""
 suffix: ""
-project: ts_sql_one
+project: go_sql_layer
 project_name: go-service
 project_path: project
 template: template

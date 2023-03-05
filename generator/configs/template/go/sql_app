@@ -2,18 +2,18 @@ package app
 
 import (
 	"context"
+	"github.com/core-go/core"
+	v "github.com/core-go/core/v10"
 	"github.com/core-go/health"
-	"github.com/core-go/log"
+	"github.com/core-go/log/zap"
 	"github.com/core-go/search/query"
-	sv "github.com/core-go/service"
-	v "github.com/core-go/service/v10"
 	q "github.com/core-go/sql"
 	"reflect"
 	{{if eq .env.layer true}}
 	"{{.env.go_module}}/internal/{{.env.handler}}"
 	"{{.env.go_module}}/internal/{{.env.model}}"{{ range $element := .collections }}
-	"{{.env.go_module}}/internal{{.env.usecase}}/{{$element.raw}}"{{end}}{{end}}{{if eq .env.layer false}}{{ range $element := .collections }}
-	"{{.env.go_module}}/internal{{.env.usecase}}/{{$element.raw}}"{{end}}{{end}}
+	"{{.env.go_module}}/internal/{{.env.usecase}}"{{end}}{{end}}{{if eq .env.layer false}}{{ range $element := .collections }}
+	"{{.env.go_module}}/internal/{{.env.usecase}}/{{$element.raw}}"{{end}}{{end}}
 )
 
 type ApplicationContext struct {
@@ -27,9 +27,9 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
 	if err != nil {
 		return nil, err
 	}
-	logError := log.ErrorMsg
-	status := sv.InitializeStatus(conf.Status)
-	action := sv.InitializeAction(conf.Action)
+	logError := log.LogError
+	status := core.InitializeStatus(conf.Status)
+	action := core.InitializeAction(conf.Action)
 	validator := v.NewValidator(){{if .env.layer}}
 {{ range $element := .collections }}
     {{$element.name}}Type := reflect.TypeOf({{.env.model}}.{{$element.Name}}{})
@@ -42,7 +42,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
     if err != nil {
         return nil, err
     }
-    {{$element.name}}{{.env.Service}} := {{.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Service}} := {{.env.usecase}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{.env.handler}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}{{if ne .env.layer true}}
 {{ range $element := .collections }}

@@ -1,8 +1,8 @@
-package {{.raw}}
+{{if .env.layer}}package {{.env.usecase}}{{else}}package {{.raw}}{{end}}
 
 import (
 	"context"
-	sv "github.com/core-go/service"{{if .env.layer}}
+	. "github.com/core-go/core"{{if .env.layer}}
 
 	. "{{.env.go_module}}/internal/{{.env.model}}"{{end}}
 )
@@ -15,12 +15,12 @@ type {{.Name}}{{.env.Service}} interface {
 	Delete(ctx context.Context, id {{.goIdType}}) (int64, error)
 }
 
-func New{{.Name}}{{.env.Service}}(repository sv.Repository) {{.Name}}{{.env.Service}} {
+func New{{.Name}}{{.env.Service}}(repository Repository) {{.Name}}{{.env.Service}} {
 	return &{{.name}}{{.env.Service}}{repository: repository}
 }
 
 type {{.name}}{{.env.Service}} struct {
-	repository sv.Repository
+	repository Repository
 }
 
 func (s *{{.name}}{{.env.Service}}) Load(ctx context.Context, id {{.goIdType}}) (*{{.Name}}, error) {
