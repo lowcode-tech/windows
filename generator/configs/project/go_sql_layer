@@ -49,13 +49,17 @@
      },
      {
        "name": "liquibase_all",
-       "file": "liquibase.yaml"
+       "file": "liquibase.yml"
+     },
+     {
+       "name": "swagger",
+       "file": "documents/swagger.yml"
      }
    ],
    "entities": [
      {
        "name": "liquibase",
-       "file": "liquibase/{{.raw}}.yaml",
+       "file": "liquibase/{{.raw}}.yml",
        "model": true,
        "replace": true
      },

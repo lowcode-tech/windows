@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  description: |-
+    This is a sample User Server based on the OpenAPI 3.0 specification.  You can find out more about
+    Swagger at [https://swagger.io](https://swagger.io).
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+tags:
+  - name: user
+    description: Operations about user
+    externalDocs:
+      description: Find out more about user
+      url: http://swagger.io
+paths:
+{{ range $element := .collections }}  /{{$element.raws}}
+    id: CREATE_TABLE_{{ $element.TABLE }}
+    author: test.user (generated)
+    labels: sit-init
+    changes:
+    - createTable:
+        columns:{{ range $field := $element.fields }}
+        - column:{{if eq $field.key true}}
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: {{if eq $field.keyName ""}}{{$element.TABLE}}_PK{{end}}{{if ne $field.keyName ""}}{{ $field.keyName }}{{end}}{{end}}{{if eq $field.key false}}{{if eq $field.required true}}
+            constraints:
+              nullable: false{{end}}{{end}}
+            name: {{ $field.COLUMN }}
+            type: {{ $field.fullDbType }}{{end}}
+        tableName: {{$element.TABLE}}
+{{end}}components:
+  schemas:
+    TimeRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: 'date-time'
+          example: '1974-11-16T00:00:00+07:00'
+        max:
+          type: string
+          format: 'date-time'
+          example: '1975-11-16T00:00:00+07:00'
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: error code, such as required, min, max, email, url, phone, password...
+          example: 'required'
+        field:
+          type: string
+          description: error field
+          example: 'username'
+    ValidationError:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: '4: validation error'
+          example: 4
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    NotFoundError:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: '0: not found'
+          example: 0
+    DuplicateKeyError:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: '0: duplicate key error'
+          example: 0
+    VersionError:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: '2: version error'
+          example: 2
+{{ range $element := .collections }}    {{ $element.Name }}:
+      type: object
+      properties:
+{{end}}
