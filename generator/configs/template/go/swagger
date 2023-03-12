@@ -63,12 +63,13 @@ paths:
         - {{$element.name}}
       summary: Get {{$element.Name}} by {{$element.Name}} ID
       operationId: get{{$element.Name}}ById
-      parameters:
-        - name: {{$element.name}}Id
+      parameters:{{ range $field := $element.fields }}{{if $field.key}}
+        - name: {{$field.name}}
           in: path
+          description: The {{$field.name}} that needs to be deleted
           required: true
           schema:
-            type: string
+            type: {{$field.jstype}}{{end}}{{end}}
       responses:
         '200':
           description: successful operation
@@ -88,13 +89,13 @@ paths:
       summary: Update {{$element.Name}}
       description: Update a {{$element.Name}}.
       operationId: update{{$element.Name}}
-      parameters:
-        - name: {{$element.name}}Id
+      parameters:{{ range $field := $element.fields }}{{if $field.key}}
+        - name: {{$field.name}}
           in: path
-          description: {{$element.Name}} that need to be updated
+          description: The {{$field.name}} that needs to be deleted
           required: true
           schema:
-            type: string
+            type: {{$field.jstype}}{{end}}{{end}}
       requestBody:
         description: Update an existent {{$element.Name}}
         content:
@@ -136,13 +137,13 @@ paths:
       summary: Update user
       description: Perform a partial update of one {{$element.Name}}.
       operationId: patchUser
-      parameters:
-        - name: {{$element.name}}Id
+      parameters:{{ range $field := $element.fields }}{{if $field.key}}
+        - name: {{$field.name}}
           in: path
-          description: {{$element.Name}} that need to be update partially
+          description: The {{$field.name}} that needs to be deleted
           required: true
           schema:
-            type: string
+            type: {{$field.jstype}}{{end}}{{end}}
       requestBody:
         description: a partial {{$element.Name}}
         content:
@@ -184,13 +185,13 @@ paths:
       summary: Delete {{$element.Name}}
       description: Delete one {{$element.Name}} by ID.
       operationId: delete{{$element.Name}}
-      parameters:
-        - name: {{$element.name}}Id
+      parameters:{{ range $field := $element.fields }}{{if $field.key}}
+        - name: {{$field.name}}
           in: path
-          description: The {{$element.name}}Id that needs to be deleted
+          description: The {{$field.name}} that needs to be deleted
           required: true
           schema:
-            type: string
+            type: {{$field.jstype}}{{end}}{{end}}
       responses:
         '200':
           description: 'return integer. 1: success'
