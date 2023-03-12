@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Swagger Petstore - OpenAPI 3.0
   description: |-
-    This is a sample User Server based on the OpenAPI 3.0 specification.  You can find out more about
+    This is a sample Server based on the OpenAPI 3.0 specification.  You can find out more about
     Swagger at [https://swagger.io](https://swagger.io).
   termsOfService: http://swagger.io/terms/
   contact:
@@ -15,10 +15,10 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 tags:
-  - name: user
-    description: Operations about user
+  - name: samples
+    description: Operations about samples
     externalDocs:
-      description: Find out more about user
+      description: Find out more about samples
       url: http://swagger.io
 paths:
 {{ range $element := .collections }}  /{{$element.paths}}:
@@ -40,7 +40,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResult'
+                $ref: '#/components/schemas/{{$element.Name}}Result'
         '400':
           description: Invalid {{$element.Name}} supplied
         '422':
@@ -68,8 +68,12 @@ paths:
           in: path
           description: The {{$field.name}} that needs to be deleted
           required: true
-          schema:
-            type: {{$field.jstype}}{{end}}{{end}}
+          schema:{{if eq $field.jstype "datetime"}}
+            type: {{$field.jstype}}
+            format: date-time{{else if eq $field.jstype "date"}}
+            type: {{$field.jstype}}
+            format: date{{else}}
+            type: {{$field.jstype}}{{end}}{{end}}{{end}}
       responses:
         '200':
           description: successful operation
@@ -118,7 +122,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotFoundError'
         '409':
-          description: 'Version error: The version of updated user is different from database version'
+          description: 'Version error: The version of updated {{$element.Name}} is different from database version'
           content:
             application/json:
               schema:
@@ -134,9 +138,9 @@ paths:
     patch:
       tags:
         - {{$element.name}}
-      summary: Update user
+      summary: Partial Update {{$element.Name}}
       description: Perform a partial update of one {{$element.Name}}.
-      operationId: patchUser
+      operationId: patch{{$element.Name}}
       parameters:{{ range $field := $element.fields }}{{if $field.key}}
         - name: {{$field.name}}
           in: path
@@ -214,8 +218,8 @@ paths:
       tags:
         - {{$element.name}}
       summary: Search {{$element.Names}}
-      description: 'Get a user by ID'
-      operationId: serachUsers
+      description: 'Search {{$element.Names}}'
+      operationId: search{{$element.Names}}
       parameters:
         - name: page
           in: query
@@ -225,7 +229,7 @@ paths:
             example: 1
         - name: limit
           in: query
-          description: 'The max of numbers of users'
+          description: 'The max of numbers of {{$element.Names}}'
           schema:
             type: integer
             example: 120
@@ -233,19 +237,63 @@ paths:
           in: query
           description: 'The return fields. For example, fields=username,email => return 2 fields: username and email'
           schema:
-            type: string{{ range $field := $element.fields }}
+            type: string{{ range $field := $element.fields }}{{if eq $field.jstype "datetime"}}
+        - name: {{ $field.name }}.min
+          in: query
+          description: 'The min of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: string
+            format: date-time
+        - name: {{ $field.name }}.max
+          in: query
+          description: 'The max of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: string
+            format: date-time{{else if eq $field.jstype "date"}}
+        - name: {{ $field.name }}.min
+          in: query
+          description: 'The min of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: string
+            format: date
+        - name: {{ $field.name }}.max
+          in: query
+          description: 'The max of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: string
+            format: date{{else if eq $field.jstype "integer"}}
+        - name: {{ $field.name }}.min
+          in: query
+          description: 'The min of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: integer
+        - name: {{ $field.name }}.max
+          in: query
+          description: 'The max of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: integer{{else if eq $field.jstype "number"}}
+        - name: {{ $field.name }}.min
+          in: query
+          description: 'The min of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: number
+        - name: {{ $field.name }}.max
+          in: query
+          description: 'The max of {{ $field.name }} that needs to be fetched'
+          schema:
+            type: number{{else if ne $field.jstype "binary"}}
         - name: {{ $field.name }}
           in: query
           description: 'The {{ $field.name }} that needs to be fetched'
           schema:
-            type: {{ $field.jstype }}{{ end }}
+            type: {{$field.jstype}}{{ end }}{{ end }}
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserSearchResponse'
+                $ref: '#/components/schemas/{{$element.Name}}SearchResponse'
         '400':
           description: Invalid parameters supplied
         '500':
@@ -253,11 +301,11 @@ paths:
     post:
       tags:
         - {{$element.name}}
-      summary: search users by POST
-      description: search users by POST
-      operationId: searchUserByPost
+      summary: search {{$element.Names}} by POST
+      description: search {{$element.Names}} by POST
+      operationId: search{{$element.Names}}ByPost
       requestBody:
-        description: Search users by POST
+        description: Search {{$element.Names}} by POST
         content:
           application/json:
             schema:
@@ -275,16 +323,45 @@ paths:
           description: Internal Server Error
 {{end}}components:
   schemas:
+    IntegerRange:
+      type: object
+      properties:
+        min:
+          type: integer
+          example: 1
+        max:
+          type: integer
+          example: 9
+    NumberRange:
+      type: object
+      properties:
+        min:
+          type: number
+          example: 1.0
+        max:
+          type: number
+          example: 9.0
+    DateRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: date
+          example: '1974-11-16'
+        max:
+          type: string
+          format: date
+          example: '1975-11-16'
     TimeRange:
       type: object
       properties:
         min:
           type: string
-          format: 'date-time'
+          format: date-time
           example: '1974-11-16T00:00:00+07:00'
         max:
           type: string
-          format: 'date-time'
+          format: date-time
           example: '1975-11-16T00:00:00+07:00'
     Error:
       type: object
@@ -332,8 +409,14 @@ paths:
 {{ range $element := .collections }}    {{ $element.Name }}:
       type: object
       properties:{{ range $field := $element.fields }}
-        {{ $field.name }}:
-          type: {{ $field.jstype }}{{end}}
+        {{ $field.name }}:{{if eq $field.jstype "datetime"}}
+          type: string
+          format: date-time{{else if eq $field.jstype "date"}}
+          type: string
+          format: date{{else if eq $field.jstype "binary"}}
+          type: string
+          format: binary{{else}}
+          type: {{$field.jstype}}{{end}}{{end}}
     {{ $element.Name }}Result:
       type: object
       properties:
@@ -353,9 +436,20 @@ paths:
         limit:
           type: integer
           description: 'Maximum of numbers of {{ $element.names }}'
-          example: 20{{ range $field := $element.fields }}
+          example: 20
+        fields:
+          type: string
+          description: 'The return fields. For example, fields=username,email => return 2 fields: username and email'{{ range $field := $element.fields }}{{if eq $field.jstype "datetime"}}
         {{ $field.name }}:
-          type: {{ $field.jstype }}{{end}}
+          $ref: '#/components/schemas/TimeRange'{{else if eq $field.jstype "date"}}
+        {{ $field.name }}:
+          $ref: '#/components/schemas/DateRange'{{else if eq $field.jstype "integer"}}
+        {{ $field.name }}:
+          $ref: '#/components/schemas/IntegerRange'{{else if eq $field.jstype "number"}}
+        {{ $field.name }}:
+          $ref: '#/components/schemas/NumberRange'{{else if ne $field.jstype "binary"}}
+        {{ $field.name }}:
+          type: {{ $field.jstype }}{{end}}{{end}}
     {{ $element.Name }}SearchResponse:
       type: object
       properties:
