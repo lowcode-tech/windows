@@ -38,7 +38,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
     {{$element.name}}Query := mq.UseQuery({{$element.name}}Type)
     {{$element.name}}SearchBuilder := mongo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
     {{$element.name}}{{.env.Repository}} := mongo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
-    {{$element.name}}{{.env.Service}} := {{.env.service}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Service}} := {{.env.service}}.New{{$element.Name}}{{.env.UseCase}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{.env.handler}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}{{if ne .env.layer true}}
 {{ range $element := .collections }}
@@ -46,7 +46,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
     {{$element.name}}Query := mq.UseQuery({{$element.name}}Type)
     {{$element.name}}SearchBuilder := mongo.NewSearchBuilder(db, "{{$element.name}}", {{$element.name}}Query, search.GetSort)
     {{$element.name}}{{.env.Repository}} := mongo.NewRepository(db, "{{$element.name}}", {{$element.name}}Type)
-    {{$element.name}}{{.env.Service}} := {{$element.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Service}} := {{$element.raw}}.New{{$element.Name}}{{.env.UseCase}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{$element.raw}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}
 	mongoChecker := mongo.NewHealthChecker(db)

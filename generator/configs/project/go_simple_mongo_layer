@@ -4,26 +4,36 @@
      "Filter": "Filter",
      "Handler": "Handler",
      "Port": "Port",
+     "Adapter": "Adapter",
      "Repository": "Repository",
      "Service": "Service",
+     "UseCase": "UseCase",
      "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
      "driver": "mysql",
      "filter": "filter",
      "go_module": "go-service",
      "handler": "handler",
+     "port": "handler",
+     "adapter": "repository",
+     "repository": "repository",
+     "service": "service",
+     "usecase": "service",
+     "layer": "true",
      "leaf": "false",
      "model": "model",
-     "port": "handler",
-     "server_port": "8080",
-     "service": "service"
+     "server_port": "8080"
    },
    "statics": [
      {
-       "name": "sql_go_mod",
+       "name": "mongo_go_mod",
        "file": "go.mod"
      },
      {
-       "name": "sql_config",
+       "name": "mongo_go_sum",
+       "file": "go.sum"
+     },
+     {
+       "name": "mongo_config",
        "file": "configs/config.yml"
      },
      {
@@ -31,22 +41,18 @@
        "file": "main.go"
      },
      {
-       "name": "sql_root",
+       "name": "mongo_root",
        "file": "internal/app/config.go"
      }
    ],
    "arrays": [
      {
-       "name": "sql_app",
+       "name": "simple_mongo_app",
        "file": "internal/app/app.go"
      },
      {
        "name": "route",
        "file": "internal/app/route.go"
-     },
-     {
-       "name": "liquibase_all",
-       "file": "documents/liquibase.yml"
      },
      {
        "name": "swagger",
@@ -55,32 +61,30 @@
    ],
    "entities": [
      {
-       "name": "liquibase",
-       "file": "liquibase/{{.raw}}.yml",
-       "model": true,
-       "replace": true
-     },
-     {
        "name": "model",
-       "file": "internal/{{.raw}}/{{.raw}}.go",
+       "file": "internal/{{.env.model}}/{{.raw | snake}}.go",
        "model": true,
        "replace": true
      },
      {
        "name": "filter",
-       "file": "internal/{{.raw}}/filter.go"
+       "file": "internal/{{.env.filter}}/{{.raw | snake}}_filter.go"
      },
      {
        "name": "service",
-       "file": "internal/{{.raw}}/service.go"
+       "file": "internal/{{.env.service}}/{{.raw | snake}}_service.go"
+     },
+     {
+       "name": "simple_usecase",
+       "file": "internal/{{.env.usecase}}/{{.raw | snake}}_usecase.go"
      },
      {
        "name": "port",
-       "file": "internal/{{.raw}}/port.go"
+       "file": "internal/{{.env.port}}/{{.raw | snake}}_port.go"
      },
      {
        "name": "handler",
-       "file": "internal/{{.raw}}/handler.go"
+       "file": "internal/{{.env.handler}}/{{.raw | snake}}_handler.go"
      }
    ]
  }

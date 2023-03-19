@@ -43,7 +43,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
     if err != nil {
         return nil, err
     }
-    {{$element.name}}{{.env.Service}} := {{.env.service}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Service}} := {{.env.service}}.New{{$element.Name}}{{.env.UseCase}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{.env.handler}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}{{if ne .env.layer true}}
 {{ range $element := .collections }}
@@ -57,7 +57,7 @@ func NewApp(ctx context.Context, conf Config) (*ApplicationContext, error) {
     if err != nil {
         return nil, err
     }
-    {{$element.name}}{{.env.Service}} := {{$element.raw}}.New{{$element.Name}}{{.env.Service}}({{$element.name}}{{.env.Repository}})
+    {{$element.name}}{{.env.Service}} := {{$element.raw}}.New{{$element.Name}}{{.env.UseCase}}({{$element.name}}{{.env.Repository}})
     {{$element.name}}{{.env.Handler}} := {{$element.raw}}.New{{$element.Name}}{{.env.Handler}}({{$element.name}}SearchBuilder.Search, {{$element.name}}{{.env.Service}}, status, logError, validator.Validate, &action)
 {{end}}{{end}}
 	sqlChecker := q.NewHealthChecker(db)

@@ -1,6 +1,6 @@
 prefix: ""
 suffix: ""
-project: go_mongo
+project: go_simple_sql
 project_name: go-service
 project_path: project
 template: template

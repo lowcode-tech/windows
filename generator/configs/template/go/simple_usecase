@@ -1,0 +1,38 @@
+{{if .env.layer}}package {{.env.usecase}}{{else}}package {{.raw}}{{end}}
+
+import (
+	"context"
+	. "github.com/core-go/core"{{if .env.layer}}
+
+	. "{{.env.go_module}}/internal/{{.env.model}}"{{end}}
+)
+
+func New{{.Name}}{{.env.UseCase}}(repository Repository) *{{.Name}}{{.env.UseCase}} {
+	return &{{.Name}}{{.env.UseCase}}{repository: repository}
+}
+
+type {{.Name}}{{.env.UseCase}} struct {
+	repository Repository
+}
+
+func (s *{{.Name}}{{.env.UseCase}}) Load(ctx context.Context, id {{.goIdType}}) (*{{.Name}}, error) {
+	var {{.name}} {{.Name}}
+	ok, err := s.repository.LoadAndDecode(ctx, id, &{{.name}})
+	if !ok {
+		return nil, err
+	} else {
+		return &{{.name}}, err
+	}
+}
+func (s *{{.Name}}{{.env.UseCase}}) Create(ctx context.Context, {{.name}} *{{.Name}}) (int64, error) {
+	return s.repository.Insert(ctx, {{.name}})
+}
+func (s *{{.Name}}{{.env.UseCase}}) Update(ctx context.Context, {{.name}} *{{.Name}}) (int64, error) {
+	return s.repository.Update(ctx, {{.name}})
+}
+func (s *{{.Name}}{{.env.UseCase}}) Patch(ctx context.Context, {{.name}} map[string]interface{}) (int64, error) {
+	return s.repository.Patch(ctx, {{.name}})
+}
+func (s *{{.Name}}{{.env.UseCase}}) Delete(ctx context.Context, id {{.goIdType}}) (int64, error) {
+	return s.repository.Delete(ctx, id)
+}

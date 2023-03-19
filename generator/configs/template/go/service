@@ -1,11 +1,11 @@
 {{if .env.layer}}package {{.env.service}}{{else}}package {{.raw}}{{end}}
-
+{{if .env.layer}}
 import (
 	"context"
-	. "github.com/core-go/core"{{if .env.layer}}
 
-	. "{{.env.go_module}}/internal/{{.env.model}}"{{end}}
-)
+	. "{{.env.go_module}}/internal/{{.env.model}}"
+){{else}}
+import "context"{{end}}
 
 type {{.Name}}{{.env.Service}} interface {
 	Load(ctx context.Context, id {{.goIdType}}) (*{{.Name}}, error)
@@ -13,34 +13,4 @@ type {{.Name}}{{.env.Service}} interface {
 	Update(ctx context.Context, {{.name}} *{{.Name}}) (int64, error)
 	Patch(ctx context.Context, {{.name}} map[string]interface{}) (int64, error)
 	Delete(ctx context.Context, id {{.goIdType}}) (int64, error)
-}
-
-func New{{.Name}}{{.env.Service}}(repository Repository) {{.Name}}{{.env.Service}} {
-	return &{{.name}}{{.env.Service}}{repository: repository}
-}
-
-type {{.name}}{{.env.Service}} struct {
-	repository Repository
-}
-
-func (s *{{.name}}{{.env.Service}}) Load(ctx context.Context, id {{.goIdType}}) (*{{.Name}}, error) {
-	var {{.name}} {{.Name}}
-	ok, err := s.repository.LoadAndDecode(ctx, id, &{{.name}})
-	if !ok {
-		return nil, err
-	} else {
-		return &{{.name}}, err
-	}
-}
-func (s *{{.name}}{{.env.Service}}) Create(ctx context.Context, {{.name}} *{{.Name}}) (int64, error) {
-	return s.repository.Insert(ctx, {{.name}})
-}
-func (s *{{.name}}{{.env.Service}}) Update(ctx context.Context, {{.name}} *{{.Name}}) (int64, error) {
-	return s.repository.Update(ctx, {{.name}})
-}
-func (s *{{.name}}{{.env.Service}}) Patch(ctx context.Context, {{.name}} map[string]interface{}) (int64, error) {
-	return s.repository.Patch(ctx, {{.name}})
-}
-func (s *{{.name}}{{.env.Service}}) Delete(ctx context.Context, id {{.goIdType}}) (int64, error) {
-	return s.repository.Delete(ctx, id)
 }

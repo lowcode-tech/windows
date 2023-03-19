@@ -4,28 +4,29 @@
      "Filter": "Filter",
      "Handler": "Handler",
      "Port": "Port",
+     "Adapter": "Adapter",
      "Repository": "Repository",
      "Service": "Service",
+     "UseCase": "UseCase",
      "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
      "driver": "mysql",
      "filter": "filter",
      "go_module": "go-service",
      "handler": "handler",
      "port": "handler",
-     "layer": "true",
+     "adapter": "repository",
+     "repository": "repository",
+     "service": "service",
+     "usecase": "service",
      "leaf": "false",
      "model": "model",
-     "server_port": "8080",
-     "service": "service"
+     "port": "handler",
+     "server_port": "8080"
    },
    "statics": [
      {
        "name": "sql_go_mod",
        "file": "go.mod"
-     },
-     {
-       "name": "sql_go_sum",
-       "file": "go.sum"
      },
      {
        "name": "sql_config",
@@ -42,7 +43,7 @@
    ],
    "arrays": [
      {
-       "name": "sql_app",
+       "name": "simple_sql_app",
        "file": "internal/app/app.go"
      },
      {
@@ -67,25 +68,29 @@
      },
      {
        "name": "model",
-       "file": "internal/{{.env.model}}/{{.raw | snake}}.go",
+       "file": "internal/{{.raw}}/{{.raw}}.go",
        "model": true,
        "replace": true
      },
      {
        "name": "filter",
-       "file": "internal/{{.env.filter}}/{{.raw | snake}}_filter.go"
+       "file": "internal/{{.raw}}/filter.go"
      },
      {
        "name": "service",
-       "file": "internal/{{.env.service}}/{{.raw | snake}}_service.go"
+       "file": "internal/{{.raw}}/service.go"
+     },
+     {
+       "name": "simple_usecase",
+       "file": "internal/{{.raw}}/usecase.go"
      },
      {
        "name": "port",
-       "file": "internal/{{.env.port}}/{{.raw | snake}}_port.go"
+       "file": "internal/{{.raw}}/port.go"
      },
      {
        "name": "handler",
-       "file": "internal/{{.env.handler}}/{{.raw | snake}}_handler.go"
+       "file": "internal/{{.raw}}/handler.go"
      }
    ]
  }

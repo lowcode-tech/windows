@@ -1,11 +1,14 @@
 {
    "language": "go",
    "env": {
+     "Adapter": "Adapter",
      "Filter": "Filter",
      "Handler": "Handler",
-     "Port": "port",
+     "Port": "Port",
      "Repository": "Repository",
      "Service": "Service",
+     "UseCase": "UseCase",
+     "adapter": "repository",
      "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
      "driver": "mysql",
      "filter": "filter",
@@ -13,8 +16,11 @@
      "handler": "handler",
      "leaf": "false",
      "model": "model",
+     "port": "handler",
+     "repository": "repository",
      "server_port": "8080",
-     "service": "service"
+     "service": "service",
+     "usecase": "service"
    },
    "statics": [
      {
@@ -36,7 +42,7 @@
    ],
    "arrays": [
      {
-       "name": "mongo_app",
+       "name": "simple_mongo_app",
        "file": "internal/app/app.go"
      },
      {
@@ -62,6 +68,10 @@
      {
        "name": "service",
        "file": "internal/{{.raw}}/service.go"
+     },
+     {
+       "name": "simple_usecase",
+       "file": "internal/{{.raw}}/usecase.go"
      },
      {
        "name": "port",
