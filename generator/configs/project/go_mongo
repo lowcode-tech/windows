@@ -3,7 +3,7 @@
    "env": {
      "Filter": "Filter",
      "Handler": "Handler",
-     "Port": "Port",
+     "Port": "port",
      "Repository": "Repository",
      "Service": "Service",
      "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
@@ -11,7 +11,6 @@
      "filter": "filter",
      "go_module": "go-service",
      "handler": "handler",
-     "Port": "port",
      "leaf": "false",
      "model": "model",
      "server_port": "8080",

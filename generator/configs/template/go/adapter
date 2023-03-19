@@ -1,0 +1,94 @@
+{{if .env.layer}}package {{.env.adapter}}{{else}}package {{.raw}}{{end}}
+
+import (
+	"context"
+	"fmt"
+	mgo "github.com/core-go/mongo"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"reflect"
+	"strings"
+
+	. "go-service/internal/model"
+)
+
+func New{{.Name}}{{.env.Adapter}}(db *mongo.Database) *{{.Name}}{{.env.Adapter}} {
+	{{.name}}Type := reflect.TypeOf({{.Name}}{})
+	bsonMap := mgo.MakeBsonMap({{.name}}Type)
+	return &{{.Name}}{{.env.Adapter}}{Collection: db.Collection("{{.name}}s"), Map: bsonMap}
+}
+
+type {{.Name}}{{.env.Adapter}} struct {
+	Collection *mongo.Collection
+	Map        map[string]string
+}
+
+func (r *{{.Name}}{{.env.Adapter}}) All(ctx context.Context) (*[]{{.Name}}, error) {
+	filter := bson.M{}
+	cursor, err := r.Collection.Find(ctx, filter)
+	if err != nil {
+		return nil, err
+	}
+	var {{.names}} []{{.Name}}
+	err = cursor.All(ctx, &{{.names}})
+	if err != nil {
+		return nil, err
+	}
+	return &{{.name}}s, nil
+}
+
+func (r *{{.Name}}{{.env.Adapter}}) Load(ctx context.Context, id {{.goIdType}}) (*{{.Name}}, error) {
+	filter := bson.M{"_id": id}
+	res := r.Collection.FindOne(ctx, filter)
+	if res.Err() != nil {
+		if strings.Compare(fmt.Sprint(res.Err()), "mongo: no documents in result") == 0 {
+			return nil, nil
+		} else {
+			return nil, res.Err()
+		}
+	}
+	var {{.name}} {{.Name}}
+	err := res.Decode(&{{.name}})
+	if err != nil {
+		return nil, err
+	}
+	return &{{.name}}, nil
+}
+
+func (r *{{.Name}}{{.env.Adapter}}) Create(ctx context.Context, {{.name}} *{{.Name}}) (int64, error) {
+	_, err := r.Collection.InsertOne(ctx, {{.name}})
+	if err != nil {
+		errMsg := err.Error()
+		if strings.Index(errMsg, "duplicate key error collection:") >= 0 {
+			if strings.Index(errMsg, "dup key: { _id: ") >= 0 {
+				return 0, nil
+			} else {
+				return -1, nil
+			}
+		}
+		return 0, err
+	}
+	return 1, nil
+}
+
+func (r *{{.Name}}{{.env.Adapter}}) Update(ctx context.Context, {{.name}} *{{.Name}}) (int64, error) {
+	filter := bson.M{"_id": {{.name}}.{{.id_field}}}
+	update := bson.M{"$set": {{.name}}}
+	res, err := r.Collection.UpdateOne(ctx, filter, update)
+	return res.ModifiedCount, err
+}
+
+func (r *{{.Name}}{{.env.Adapter}}) Patch(ctx context.Context, {{.name}} map[string]interface{}) (int64, error) {
+	filter := mgo.BuildQueryByIdFromMap({{.name}}, "{{.id_json}}")
+	bson := mgo.MapToBson({{.name}}, r.Map)
+	return mgo.PatchOne(ctx, r.Collection, bson, filter)
+}
+
+func (r *{{.Name}}{{.env.Adapter}}) Delete(ctx context.Context, id {{.goIdType}}) (int64, error) {
+	filter := bson.M{"_id": id}
+	res, err := r.Collection.DeleteOne(ctx, filter)
+	if res == nil || err != nil {
+		return 0, err
+	}
+	return res.DeletedCount, err
+}

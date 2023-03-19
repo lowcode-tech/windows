@@ -1,0 +1,16 @@
+{{if .env.layer}}package {{.env.repository}}{{else}}package {{.raw}}{{end}}
+
+import (
+	"context"
+	. "github.com/core-go/core"{{if .env.layer}}
+
+	. "{{.env.go_module}}/internal/{{.env.model}}"{{end}}
+)
+
+type {{.Name}}{{.env.Repository}} interface {
+	Load(ctx context.Context, id {{.goIdType}}) (*{{.Name}}, error)
+	Create(ctx context.Context, {{.name}} *{{.Name}}) (int64, error)
+	Update(ctx context.Context, {{.name}} *{{.Name}}) (int64, error)
+	Patch(ctx context.Context, {{.name}} map[string]interface{}) (int64, error)
+	Delete(ctx context.Context, id {{.goIdType}}) (int64, error)
+}
