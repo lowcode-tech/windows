@@ -3,11 +3,11 @@ package {{if .env.layer}}{{.env.model}}{{else}}{{.raw}}{{end}}{{if .time}}
 import "time"{{end}}
 
 type {{.Name}} struct {|{{ range $element := .fields }}
-    {{$element.Name}} {{$element.type}} `mapstructure:"{{$element.raw}}" json:"{{$element.name}},omitempty" gorm:"column:{{$element.column | lower}}{{if $element.key}};primary_key{{end}}" bson:"{{$element.bson}}" dynamodbav:"{{$element.name}},omitempty" firestore:"{{$element.name}},omitempty" avro:"{{$element.name}}" validate:"required{{if ne $element.length 0}},max={{$element.length}}{{end}}"`{{end}}{{range $element := .arrays}} {{if or ($element.leaf) (eq .env.leaf "false")}}
-    {{$element.Names}} []{{$element.Name}} `mapstructure:"{{$element.raws}}" json:"{{$element.names}},omitempty" bson:"{{$element.names}}" dynamodbav:"{{$element.names}},omitempty" firestore:"{{$element.names}},omitempty" avro:"{{$element.names}}"`{{end}}{{end}}
+    {{$element.Name}} {{$element.type}} `yaml:"{{$element.raw}}" mapstructure:"{{$element.raw}}" json:"{{$element.name}},omitempty" gorm:"column:{{$element.column | lower}}{{if $element.key}};primary_key{{end}}" bson:"{{$element.bson}}" dynamodbav:"{{$element.name}},omitempty" firestore:"{{$element.name}},omitempty" avro:"{{$element.name}}" validate:"required{{if ne $element.length 0}},max={{$element.length}}{{end}}"`{{end}}{{range $element := .arrays}} {{if or ($element.leaf) (eq .env.leaf "false")}}
+    {{$element.Names}} []{{$element.Name}} `yaml:"{{$element.raws}}" mapstructure:"{{$element.raws}}" json:"{{$element.names}},omitempty" bson:"{{$element.names}}" dynamodbav:"{{$element.names}},omitempty" firestore:"{{$element.names}},omitempty" avro:"{{$element.names}}"`{{end}}{{end}}
 }{{if eq .env.layer false}}
 {{ range $child := .arrays }}{{ if or ($child.leaf) (eq .env.leaf "false")}} {{if ne $child.Name $child.parent}}
 type {{$child.Name}} struct {|{{ range $element := $child.fields }}
-    {{$element.Name}} {{$element.type}} `mapstructure:"{{$element.raw}}" json:"{{$element.name}},omitempty" gorm:"column:{{$element.name}}" bson:"{{$element.bson}}" dynamodbav:"{{$element.name}},omitempty" firestore:"{{$element.name}},omitempty" avro:"{{$element.name}}" validate:"required{{if ne $element.length 0}},max={{$element.length}}{{end}}"`{{end}}
+    {{$element.Name}} {{$element.type}} `yaml:"{{$element.raw}}" mapstructure:"{{$element.raw}}" json:"{{$element.name}},omitempty" gorm:"column:{{$element.name}}" bson:"{{$element.bson}}" dynamodbav:"{{$element.name}},omitempty" firestore:"{{$element.name}},omitempty" avro:"{{$element.name}}" validate:"required{{if ne $element.length 0}},max={{$element.length}}{{end}}"`{{end}}
 }
 {{end}}{{end}}{{end}}{{end}}

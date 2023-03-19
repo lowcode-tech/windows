@@ -1,6 +1,6 @@
 server:
   name: {{.env.project}}
-  port: {{.env.port}}
+  port: {{.env.server_port}}
 
 mongo:
   uri: mongodb+srv://dbUser:Demoaccount1@projectdemo.g0lah.mongodb.net

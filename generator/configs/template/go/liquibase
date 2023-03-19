@@ -10,7 +10,7 @@ databaseChangeLog:
             constraints:
               nullable: false
               primaryKey: true
-              primaryKeyName: {{ .TABLE }}_PK{{end}}{{if eq $field.key false}}{{if eq $field.required true}}
+              primaryKeyName: {{if eq $field.keyName ""}}{{$field.parent.TABLE}}_PK{{end}}{{if ne $field.keyName ""}}{{ $field.keyName }}{{end}}{{end}}{{if eq $field.key false}}{{if eq $field.required true}}
             constraints:
               nullable: false{{end}}{{end}}
             name: {{ $field.COLUMN }}

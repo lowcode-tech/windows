@@ -1,6 +1,6 @@
 server:
   name: {{.env.project}}
-  port: {{.env.port}}
+  port: {{.env.server_port}}
 
 sql:
   driver: {{.env.driver}}

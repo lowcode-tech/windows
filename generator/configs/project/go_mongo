@@ -3,6 +3,7 @@
    "env": {
      "Filter": "Filter",
      "Handler": "Handler",
+     "Port": "Port",
      "Repository": "Repository",
      "Service": "Service",
      "data_source_name": "root:abcd1234@(localhost:3306)/masterdata?charset=utf8\u0026parseTime=True\u0026loc=Local",
@@ -10,9 +11,10 @@
      "filter": "filter",
      "go_module": "go-service",
      "handler": "handler",
+     "Port": "port",
      "leaf": "false",
      "model": "model",
-     "port": "8080",
+     "server_port": "8080",
      "service": "service"
    },
    "statics": [
@@ -56,15 +58,19 @@
      },
      {
        "name": "filter",
-       "file": "internal/{{.raw}}/{{.raw}}_filter.go"
+       "file": "internal/{{.raw}}/filter.go"
      },
      {
        "name": "service",
-       "file": "internal/{{.raw}}/{{.raw}}_service.go"
+       "file": "internal/{{.raw}}/service.go"
+     },
+     {
+       "name": "port",
+       "file": "internal/{{.raw}}/port.go"
      },
      {
        "name": "handler",
-       "file": "internal/{{.raw}}/{{.raw}}_handler.go"
+       "file": "internal/{{.raw}}/handler.go"
      }
    ]
  }
